@@ -1,0 +1,208 @@
+---
+title: "Practical 30"
+author: "Deepak Kumar Bharti"
+date: "25056765013"
+output: html_document
+---
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+To apply the Wilcoxon Signed-Rank Test in R to determine whether the median weight of cadets is significantly different from 50 kg at the 5% level of significance.
+
+#### **Problem :**
+The **weight** in *kg* of a random sample of 30 cadets are:
+$$
+49, 46, 57, 37, 45, 57, 50, 65, 34, 50, 58, 46, 47, 42, 53, 67, 40, 52, 49, 66, 53, 48, 68, 40, 53, 49, 61, 54, 48, 38.
+$$
+Assume that the distribution of the weight of cadets is symmetric about its median. Test whether the median weight of all the cadets of the college is 50 kg using **Wilcoxon Signed-Rank Test**, at 5% level of significance.
+
+#### **Theory :**
+##### **Wilcoxon Signed-Rank Test**
+The **Wilcoxon Signed-Rank Test** is a non-parametric statistical test used to determine whether the median of a population is significantly different from a specified value. It is used as an alternative to the one-sample t-test when the assumption of normality is not satisfied.
+
+The test is based on the differences between each observation and the hypothesized population median. These differences are ranked according to their absolute values, and positive and negative ranks are compared to determine whether a significant difference exists.
+
+In this practical, the Wilcoxon Signed-Rank Test is used to examine whether the median weight of cadets in a college is 50 kg, based on a random sample of 30 cadets, at the 5% level of significance.
+
+##### **Objectives of the Test**
+- To test whether the population median differs significantly from a specified value.
+- To analyse the weight distribution of cadets using a non-parametric method.
+- To determine whether the median weight of cadets is 50 kg.
+- To perform the statistical test at the 5% level of significance using R.
+
+##### **Assumptions of the Wilcoxon Signed-Rank Test**
+1. The observations should be randomly selected from the population.
+2. The observations must be independent of each other.
+3. The data should be measured on an ordinal, interval or ratio scale.
+4. The distribution of differences from the hypothesized median should be approximately symmetric.
+5. The differences should be meaningfully rankable.
+
+##### **Hypotheses**
+The hypotheses for this practical are:
+
+**Null Hypothesis (H0):**
+
+The median weight of all cadets in the college is 50 kg.
+
+$$
+H_0: M = 50
+$$
+
+**Alternative Hypothesis (H1):**
+
+The median weight of all cadets in the college is not 50 kg.
+
+$$
+H_1: M \neq 50
+$$
+
+##### **Procedure of the Wilcoxon Signed-Rank Test**
+The test is performed using the following steps:
+
+1. Calculate the difference between each observation and the hypothesized median.
+2. Ignore the observations having zero differences.
+3. Arrange the absolute differences in ascending order.
+4. Assign ranks to the absolute differences. For tied values, assign average ranks.
+5. Attach the original positive or negative signs to the ranks.
+6. Calculate the sum of positive ranks and the sum of negative ranks.
+7. Determine the test statistic and corresponding p-value.
+8. Compare the p-value with the specified level of significance to make the final decision.
+
+##### **Formula**
+The differences are calculated as:
+
+$$
+d_i = X_i - M_0
+$$
+
+Where:
+
+- `Xi` = Individual observation.
+- `M0` = Hypothesized population median.
+- `di` = Difference between the observation and hypothesized median.
+
+The test statistic is based on the positive and negative rank sums:
+
+$$
+W^+ = \sum R_i^+
+$$
+
+$$
+W^- = \sum R_i^-
+$$
+
+Where:
+
+- `W+` = Sum of positive ranks.
+- `W-` = Sum of negative ranks.
+- `Ri` = Rank of the absolute difference.
+
+##### **Level of Significance**
+The level of significance represents the probability of rejecting a true null hypothesis.
+
+In this practical:
+
+$$
+\alpha = 0.05 = 5\%
+$$
+
+Since the alternative hypothesis is two-sided, the test examines whether the median weight is either greater than or less than 50 kg.
+
+##### **Decision Rule**
+The decision is made by comparing the p-value with the level of significance.
+
+- If p-value is less than 0.05, reject the null hypothesis.
+- If p-value is greater than or equal to 0.05, do not reject the null hypothesis.
+
+##### **Functions Used :**
+- `c()` – Used to create a vector containing the weights of 30 cadets.
+- `print()` – Used to display the data and test results.
+- `length()` – Used to calculate the number of observations in the sample.
+- `wilcox.test()` – Used to perform the Wilcoxon Signed-Rank Test.
+- `paste()` – Used to combine text with calculated values for displaying output.
+- `if...else` – Used to make the statistical decision based on the p-value.
+- `p.value` – Used to extract the p-value from the test results.
+
+#### **Code and Calculation :**
+```{r}
+# Wilcoxon Signed-Rank Test
+
+# Step 1: Enter the weight data of 30 cadets (in kg)
+weight <- c(49, 46, 57, 37, 45, 57, 50, 65, 34, 50,
+            58, 46, 47, 42, 53, 67, 40, 52, 49, 66,
+            53, 48, 68, 40, 53, 49, 61, 54, 48, 38)
+
+# Step 2: Display the given data
+print("Weights of 30 cadets:")
+print(weight)
+
+# Step 3: Calculate the sample size
+n <- length(weight)
+print(paste("Sample size:", n))
+
+# Step 4: Set the hypothesized population median
+mu <- 50
+
+# Step 5: Set the level of significance
+alpha <- 0.05
+
+# Step 6: Perform the Wilcoxon Signed-Rank Test
+# alternative = "two.sided" tests whether the median
+# weight is different from 50 kg.
+# exact = FALSE is used because the data contain ties
+# and observations equal to the hypothesized median.
+
+result <- wilcox.test(weight,
+                      mu = mu,
+                      alternative = "two.sided",
+                      exact = FALSE,
+                      correct = TRUE)
+
+# Step 7: Display the test results
+print(result)
+
+# Step 8: Extract the p-value
+p_value <- result$p.value
+
+print(paste("P-value:", p_value))
+
+# Step 9: Make the statistical decision
+if (p_value < alpha) {
+  print("Reject the Null Hypothesis (H0)")
+  print("The median weight of cadets is significantly different from 50 kg.")
+} else {
+  print("Do not reject the Null Hypothesis (H0)")
+  print("There is insufficient evidence to conclude that the median weight differs from 50 kg.")
+}
+
+# Step 10: Display the final conclusion
+print(paste("Level of significance:", alpha))
+
+```
+
+#### **Results :**
+The Wilcoxon Signed-Rank Test was performed in R to determine whether the median weight of cadets in the college is significantly different from 50 kg.
+
+The test produced the following results:
+
+- **Sample size (n):** 30
+- **Test statistic (V):** 216.5
+- **P-value:** 0.7670
+- **Level of significance (α):** 0.05 (5%)
+- **Hypothesized median:** 50 kg
+- **Alternative hypothesis:** The median weight is not equal to 50 kg.
+
+##### **Statistical Decision**
+Since the p-value (0.7670) is greater than the level of significance (0.05), we do not reject the null hypothesis (H0).
+$$
+0.7670 > 0.05
+$$
+
+#### **Conclusions :**
+At the 5% level of significance, there is insufficient statistical evidence to conclude that the median weight of cadets differs significantly from 50 kg.
+
+Therefore, we do not reject the null hypothesis that the median weight of cadets in the college is 50 kg.

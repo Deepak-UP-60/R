@@ -1,0 +1,457 @@
+---
+title: "Practical 28"
+author: "Deepak Kumar Bharti"
+date: '25056765013'
+output: html_document
+---
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+To analyse the data by performing Latin Square Design (LSD).
+
+#### **Problem :**
+The adjoining table gives the results of Latin Square experiment on the effect on manual treatment A, B, C, D, E on the yield of sugarcane.
+
+|         |         |         |         |         |
+|:-------:|:-------:|:-------:|:-------:|:-------:|
+| (B) 405 | (A) 525 | (E) 463 | (D) 441 | (C) 481 |
+| (C) 325 | (D) 445 | (B) 429 | (A) 413 | (E) 493 |
+| (E) 471 | (B) 492 | (A) 432 | (C) 381 | (D) 410 |
+| (A) 552 | (C) 431 | (D) 425 | (E) 572 | (B) 451 |
+| (D) 430 | (E) 464 | (C) 432 | (B) 467 | (A) 460 |
+
+Test whether the treatments are equally effective and if they are not so compare the treatments A and B.
+
+#### **Theory :**
+A Latin Square Design (LSD) is an experimental design used to control variation in two directions, namely rows and columns, while studying the effects of different treatments. It is commonly used when experimental units show variation in two different directions.
+
+In a Latin Square Design, the number of rows, columns and treatments is equal. Each treatment appears exactly once in every row and once in every column.
+
+In the given experiment, five treatments (A, B, C, D and E) are arranged in a $5 \times 5$ Latin Square Design. Therefore, the total number of experimental observations is:
+
+$$
+N = 5^2 = 25
+$$
+
+Each treatment is replicated five times.
+
+##### **Arrangement of Treatments**
+The treatments are arranged in such a way that each treatment occurs exactly once in every row and column.
+
+The experimental design consists of:
+
+- Rows: 5
+- Columns: 5
+- Treatments: 5
+- Replications per treatment: 5
+- Total observations: 25
+
+##### **Statistical Model**
+The mathematical model for a Latin Square Design is:
+
+$$
+Y_{ijk} = \mu + R_i + C_j + T_k + \epsilon_{ijk}
+$$
+
+Where:
+
+- $\mu$ = Overall mean.
+- $R_i$ = Effect of the $i^{th}$ row.
+- $C_j$ = Effect of the $j^{th}$ column.
+- $T_k$ = Effect of the $k^{th}$ treatment.
+- $\epsilon_{ijk}$ = Random experimental error.
+
+##### **Calculation of Correction Factor**
+The correction factor is calculated as:
+
+$$
+CF = \frac{G^2}{N}
+$$
+
+Where:
+
+- $G$ = Grand total of all observations.
+- $N$ = Total number of observations.
+
+##### **Arrangement of Treatments**
+### 4. Analysis of Variance (ANOVA)
+
+ANOVA is used to determine whether the differences among treatments are statistically significant.
+
+The total sum of squares is:
+
+$$
+TSS = \sum Y^2 - CF
+$$
+
+**Sum of Squares due to Rows:**
+
+$$
+SSR = \frac{\sum R_i^2}{n} - CF
+$$
+
+**Sum of Squares due to Columns:**
+
+$$
+SSC = \frac{\sum C_j^2}{n} - CF
+$$
+
+**Sum of Squares due to Treatments:**
+
+$$
+SST = \frac{\sum T_k^2}{n} - CF
+$$
+
+**Error Sum of Squares:**
+
+$$
+SSE = TSS - SSR - SSC - SST
+$$
+
+Where $n$ represents the number of rows, columns and treatments.
+
+##### **Degrees of Freedom**
+For a Latin Square Design with $n$ treatments:
+
+| Source of Variation | Degrees of Freedom |
+|---------------------|--------------------|
+| Rows                | $n-1$              |
+| Columns             | $n-1$              |
+| Treatments          | $n-1$              |
+| Error               | $(n-1)(n-2)$       |
+| Total               | $n^2-1$            |
+
+For the given $5 \times 5$ Latin Square Design:
+
+| Source of Variation | Degrees of Freedom |
+|---------------------|--------------------|
+| Rows                | 4                  |
+| Columns             | 4                  |
+| Treatments          | 4                  |
+| Error               | 12                 |
+| Total               | 24                 |
+
+##### **Mean Sum of Squares and F-test**
+Mean sum of squares is calculated as:
+
+$$
+MS = \frac{SS}{df}
+$$
+
+The calculated F-value is:
+
+$$
+F = \frac{MS_{\text{Source}}}{MS_{\text{Error}}}
+$$
+
+The calculated F-value is compared with the tabulated F-value at the required level of significance.
+
+- If calculated F is greater than tabulated F, the effect is significant.
+- If calculated F is less than tabulated F, the effect is non-significant.
+
+##### **Comparison of Two Treatments**
+When treatments are compared, the standard error of difference between two treatment means is calculated as:
+
+$$
+SE(d) = \sqrt{\frac{2MSE}{n}}
+$$
+
+The calculated t-value is:
+
+$$
+t = \frac{|\bar{T}_A-\bar{T}_B|}{SE(d)}
+$$
+
+Where:
+
+- $\bar{T}_A$ = Mean yield of treatment A.
+- $\bar{T}_B$ = Mean yield of treatment B.
+- $MSE$ = Mean square error.
+- $n$ = Number of replications per treatment.
+
+The calculated t-value is compared with the tabulated t-value to determine whether treatments A and B differ significantly.
+
+##### **Advantages of Latin Square Design**
+1. It controls variation in two directions (rows and columns).
+2. It increases the precision of experimental results.
+3. Each treatment receives equal representation in every row and column.
+4. It helps compare the effectiveness of different treatments.
+5. It is useful in agricultural and biological experiments.
+
+##### **Functions Used :**
+- `matrix()` – To create the treatment and yield matrices.
+- `c()` – To combine values into vectors.
+- `as.vector()` – To convert matrices into vectors.
+- `t()` – To transpose a matrix.
+- `factor()` – To convert variables into categorical factors.
+- `rep()` – To repeat values.
+- `data.frame()` – To create a data frame.
+- `length()` – To find the total number of observations.
+- `sum()` – To calculate the sum of observations.
+- `tapply()` – To calculate row, column and treatment totals and means.
+- `anova()` – To obtain the analysis of variance table.
+- `aov()` – To fit the ANOVA model.
+- `sqrt()` – To calculate square roots.
+- `abs()` – To calculate absolute values.
+- `pt()` – To calculate the cumulative probability from the t-distribution.
+- `qt()` – To obtain the critical t-value.
+- `max()` – To find the maximum treatment mean.
+- `which.max()` – To identify the treatment with the maximum mean.
+- `names()` – To extract treatment names.
+- `cat()` – To display results.
+- `print()` – To display matrices, data frames and results.
+- `if`, `else` – To test the significance of treatments and draw conclusions.
+
+#### **Code and Calculation :**
+```{r}
+
+# Analysis of Latin Square Design (LSD)
+# To test the effectiveness of treatments A, B, C, D and E
+
+# Step 1: Enter the experimental data
+# Enter treatment arrangement in a 5 x 5 Latin Square
+Treatment <- matrix(c(
+  "B", "A", "E", "D", "C",
+  "C", "D", "B", "A", "E",
+  "E", "B", "A", "C", "D",
+  "A", "C", "D", "E", "B",
+  "D", "E", "C", "B", "A"
+), nrow = 5, byrow = TRUE)
+
+# Enter the corresponding yield values
+Yield <- matrix(c(
+  405, 525, 463, 441, 481,
+  325, 445, 429, 413, 493,
+  471, 492, 432, 381, 410,
+  552, 431, 425, 572, 451,
+  430, 464, 432, 467, 460
+), nrow = 5, byrow = TRUE)
+
+# Display treatment arrangement
+cat("Treatment Arrangement:")
+print(Treatment)
+
+# Display yield data
+cat("Yield Data:")
+print(Yield)
+
+# Step 2: Prepare the data frame
+# Convert matrices into vectors
+Treatment <- as.vector(t(Treatment))
+Yield <- as.vector(t(Yield))
+
+# Define row and column factors
+Row <- factor(rep(1:5, each = 5))
+Column <- factor(rep(1:5, times = 5))
+
+# Create the data frame
+data <- data.frame(Row, Column, Treatment, Yield)
+
+# Convert treatment into a factor
+data$Treatment <- factor(data$Treatment)
+
+# Display the experimental data
+cat("Experimental Data:")
+print(data)
+
+# Step 3: Calculate row, column and treatment totals
+# Calculate row totals
+Row_Total <- tapply(data$Yield, data$Row, sum)
+
+# Calculate column totals
+Column_Total <- tapply(data$Yield, data$Column, sum)
+
+# Calculate treatment totals
+Treatment_Total <- tapply(data$Yield,
+                          data$Treatment, sum)
+
+cat("Row Totals:")
+print(Row_Total)
+
+cat("Column Totals:")
+print(Column_Total)
+
+cat("Treatment Totals:")
+print(Treatment_Total)
+
+# Step 4: Calculate Correction Factor and Total SS
+# Number of rows, columns and treatments
+n <- 5
+
+# Total number of observations
+N <- length(Yield)
+
+# Grand total
+G <- sum(Yield)
+
+# Correction Factor
+CF <- G^2 / N
+
+# Total Sum of Squares
+TSS <- sum(Yield^2) - CF
+
+cat("Grand Total =", G)
+cat("Correction Factor =", CF)
+cat("Total Sum of Squares =", TSS)
+
+# Step 5: Calculate Sum of Squares
+# Sum of Squares due to Rows
+SSR <- sum(Row_Total^2) / n - CF
+
+# Sum of Squares due to Columns
+SSC <- sum(Column_Total^2) / n - CF
+
+# Sum of Squares due to Treatments
+SSTrt <- sum(Treatment_Total^2) / n - CF
+
+# Error Sum of Squares
+SSE <- TSS - SSR - SSC - SSTrt
+
+cat("Sum of Squares:")
+cat("SS due to Rows =", SSR)
+cat("SS due to Columns =", SSC)
+cat("SS due to Treatments =", SSTrt)
+cat("Error SS =", SSE)
+
+# Step 6: Calculate Degrees of Freedom and Mean Squares
+# Degrees of freedom
+df_row <- n - 1
+df_column <- n - 1
+df_treatment <- n - 1
+df_error <- (n - 1) * (n - 2)
+df_total <- N - 1
+
+# Mean Squares
+MSR <- SSR / df_row
+MSC <- SSC / df_column
+MSTrt <- SSTrt / df_treatment
+MSE <- SSE / df_error
+
+cat("Mean Squares:")
+cat("MS Rows =", MSR)
+cat("MS Columns =", MSC)
+cat("MS Treatments =", MSTrt)
+cat("MS Error =", MSE)
+
+# Step 7: Calculate F-values
+# Calculate F-values
+F_Row <- MSR / MSE
+F_Column <- MSC / MSE
+F_Treatment <- MSTrt / MSE
+
+cat("Calculated F-values:")
+cat("F for Rows =", F_Row)
+cat("F for Columns =", F_Column)
+cat("F for Treatments =", F_Treatment)
+
+# Step 8: Prepare ANOVA table using aov()
+# Fit the Latin Square Design model
+model <- aov(Yield ~ Row + Column + Treatment,
+             data = data)
+
+# Obtain ANOVA table
+anova_table <- anova(model)
+
+cat("ANOVA Table:")
+print(anova_table)
+
+# Step 9: Test significance of treatments
+# Extract treatment p-value
+p_Treatment <- anova_table["Treatment", "Pr(>F)"]
+
+# Set level of significance
+alpha <- 0.05
+
+cat("Test of Treatment Significance:")
+
+if (p_Treatment < alpha) {
+  cat("Treatments differ significantly at 5% level.")
+} else {
+  cat("Treatments do not differ significantly at 5% level.")
+}
+
+# Step 10: Calculate treatment means
+# Calculate mean yield for each treatment
+Treatment_Mean <- tapply(data$Yield,
+                         data$Treatment, mean)
+
+cat("Treatment Means:")
+print(Treatment_Mean)
+
+# Step 11: Compare treatments A and B
+# Calculate difference between means of A and B
+Difference_AB <- Treatment_Mean["A"] -
+                 Treatment_Mean["B"]
+
+# Calculate standard error of difference
+SE_Difference <- sqrt(2 * MSE / n)
+
+# Calculate t-value
+t_cal <- abs(Difference_AB) / SE_Difference
+
+# Calculate two-tailed p-value
+p_AB <- 2 * pt(-t_cal, df = df_error)
+
+# Calculate critical t-value
+t_tab <- qt(1 - alpha / 2, df = df_error)
+
+cat("Comparison between Treatments A and B:")
+cat("Mean of A =", Treatment_Mean["A"])
+cat("Mean of B =", Treatment_Mean["B"])
+cat("Difference =", Difference_AB)
+cat("Standard Error =", SE_Difference)
+cat("Calculated t-value =", t_cal)
+cat("Tabulated t-value =", t_tab)
+cat("P-value =", p_AB)
+
+
+# Step 12: Final Conclusion using if-else statements
+# Overall treatment significance
+if (p_Treatment < alpha) {
+  cat("Treatments are significantly different.")
+} else {
+  cat("Treatments are equally effective statistically.")
+}
+
+# Comparison between A and B
+if (p_AB < alpha) {
+  cat("Treatments A and B differ significantly.")
+} else {
+  cat("Treatments A and B do not differ significantly.")
+}
+
+# Identify the treatment with maximum mean yield
+Best_Treatment <- names(which.max(Treatment_Mean))
+cat("Treatment with maximum mean yield is", Best_Treatment)
+cat("Maximum Mean Yield =", max(Treatment_Mean))
+
+```
+
+#### **Results :**
+The Latin Square Design (LSD) experiment was analysed using R to study the effect of five treatments (A, B, C, D and E) on sugarcane yield.
+
+1. The grand total of observations was **11290**, and the correction factor was **5098564**.
+
+2. The treatment totals obtained were:
+   - A = 2382
+   - B = 2244
+   - C = 2050
+   - D = 2151
+   - E = 2463
+
+3. The ANOVA revealed that the treatment effect was **non-significant** at the 5% level of significance (F = 2.6780, p = 0.08332).
+
+4. The mean yields of treatments A and B were:
+   - Treatment A = 476.4
+   - Treatment B = 448.8
+
+5. The comparison between treatments A and B was non-significant (t = 0.9530, p = 0.3594).
+
+6. Treatment E recorded the highest mean yield of **492.6**, followed by treatment A (476.4).
+
+#### **Conclusions :**
+At the 5% level of significance, there was no significant difference among the five treatments. Treatments A and B were also found to be statistically equally effective. Treatment E recorded the highest average sugarcane yield of 492.6.

@@ -1,0 +1,172 @@
+---
+title: "Practical 19"
+author: "Deepak Kumar Bharti"
+date: '25056765013'
+output: html_document
+---
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+To generate a discrete random variable from the given probability mass function (PMF) using the inverse transform method.
+
+#### **Problem :**
+Generate a Discrete Random Variable from the given PMF :
+
+| $x$ | 0 | 1 | 2 | 3 |
+|---|---:|---:|---:|---:|
+| $P(X=x)$ | 0.2 | 0.3 | 0.1 | 0.4 |
+
+#### **Theory :**
+A **discrete random variable** is a random variable that can take a finite or countable number of distinct values. It is described by a **Probability Mass Function (PMF)**, which gives the probability that the random variable takes a particular value.
+
+For a discrete random variable $X$, the PMF is defined as:
+$$
+P(X=x)=p(x)
+$$
+where:
+$$
+p(x)\geq 0
+$$
+and
+$$
+\sum_x p(x)=1
+$$
+For this practical, the given PMF is:
+
+| $x$ | 0 | 1 | 2 | 3 |
+|---|---:|---:|---:|---:|
+| $P(X=x)$ | 0.2 | 0.3 | 0.1 | 0.4 |
+
+The **Cumulative Distribution Function (CDF)** is obtained by adding the probabilities successively:
+$$
+F(x)=P(X\leq x)
+$$
+Therefore,
+$$
+F(0)=0.2
+$$
+
+$$
+F(1)=0.2+0.3=0.5
+$$
+
+$$
+F(2)=0.2+0.3+0.1=0.6
+$$
+
+$$
+F(3)=0.2+0.3+0.1+0.4=1
+$$
+
+##### **Inverse Transform Method**
+To generate the random variable, the **inverse transform method** is used. A random number $U$ is first generated from a uniform distribution:
+$$
+U\sim U(0,1)
+$$
+The value of $X$ is then selected according to the interval in which $U$ falls:
+$$
+X =
+\begin{cases}
+0, & 0\leq U<0.2\\
+1, & 0.2\leq U<0.5\\
+2, & 0.5\leq U<0.6\\
+3, & 0.6\leq U\leq1
+\end{cases}
+$$
+Thus, by generating uniform random numbers and mapping them to the corresponding cumulative probability intervals, observations from the required discrete probability distribution can be generated using **R programming**.
+
+##### **Functions Used :**
+- `c()` : Creates a vector of values or probabilities.
+- `cumsum()` : Calculates the cumulative sum of the probabilities.
+- `runif()` : Generates random numbers from a uniform distribution between 0 and 1.
+- `which()` : Finds the position of elements that satisfy a given condition.
+- `sapply()` : Applies a function to each element of a vector and returns the results.
+- `function()` : Defines a function to perform a specific operation.
+- `table()` : Calculates the frequency of each unique value in the generated sample.
+- `prop.table()` : Converts frequencies into proportions or estimated probabilities.
+- `as.numeric()` : Converts values into numeric data.
+- `data.frame()` : Creates a data frame to organize and compare data.
+- `rbind()` : Combines vectors or rows vertically.
+- `barplot()` : Creates a bar chart to visualize frequencies or probabilities.
+
+#### **Code and Calculation :**
+```{r}
+# Given values of X
+x <- c(0, 1, 2, 3)
+
+# Given PMF
+p <- c(0.2, 0.3, 0.1, 0.4)
+
+# Calculating cumulative probabilities
+cdf <- cumsum(p)
+
+# Number of samples
+n <- 1000
+
+# Generating a uniform random number
+u <- runif(n)
+
+
+# Generating 1000 observations using the inverse transform method
+X <- sapply(u, function(u) {
+  x[which(u <= cdf)[1]]
+})
+
+# Displaying the first 20 observations
+head(X, 20)
+
+# Displaying frequency of each value
+table(X)
+
+# Displaying estimated probabilities
+prop.table(table(X))
+
+# Frequency of each value
+freq <- table(X)
+
+# Bar plot
+barplot(freq,
+        main = "Frequency Distribution of X",
+        xlab = "Values of X",
+        ylab = "Frequency",
+        col = "skyblue")
+        
+# Estimated probabilities
+prob <- prop.table(table(X))
+        
+# Creating a grouped bar plot
+prob_matrix <- rbind(
+  Theoretical = p,
+  Estimated = prob
+)
+
+# ploting Theoretical vs Estimated probabilities
+barplot(prob_matrix,
+        beside = TRUE,
+        names.arg = x,
+        main = "Theoretical vs Estimated Probability",
+        xlab = "Value of X",
+        ylab = "Probability",
+        legend.text = TRUE,
+        col = c("skyblue", "lightgreen"))
+```
+
+#### **Results & Conclusions :**
+A total of **1000 random samples** were generated from the given discrete probability distribution.
+
+The observed frequencies and estimated probabilities are:
+
+| $X$ | Frequency | Estimated Probability | Theoretical Probability |
+|---:|---:|---:|---:|
+| 0 | 211 | 0.211 | 0.200 |
+| 1 | 305 | 0.305 | 0.300 |
+| 2 | 110 | 0.110 | 0.100 |
+| 3 | 374 | 0.374 | 0.400 |
+
+The estimated probabilities are close to the theoretical probabilities. The graphical comparison also shows that the estimated distribution follows the same general pattern as the theoretical probability distribution.
+
+Hence, the simulation successfully represents the given discrete probability distribution.

@@ -1,0 +1,77 @@
+---
+title: "Practical 2"
+author: "Deepak Kumar Bharti"
+date: '25056765013'
+output: html_document
+---
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+To generate a vector of 20 elements in R and perform operations such as checking its class and type, converting it into a complex vector, extracting elements, and creating matrices using row-wise and column-wise binding.
+
+#### **Theory :**
+In R, a **vector** is a one-dimensional data structure that stores
+elements of the same data type. The `seq()` function is used to generate
+a sequence of numbers with a specified starting value, increment, and
+length. The `class()` and `typeof()` functions are used to determine the
+class and underlying data type of a vector.
+
+A numeric vector can be converted into a **complex vector** using the
+`as.complex()` function. Individual elements of a vector can be accessed
+using their index position. The `rbind()` function is used to combine
+data **row-wise**, while `cbind()` is used to combine data **column-wise**.
+The functions `is.vector()` and `is.matrix()` are used to test whether
+an object is a vector or a matrix.
+
+#### **Problem :**
+Generate a vector of 20 elements starting with 2.5 by a jump of 0.3 and perform the following tasks :
+```{r}
+# Generating the vector
+x <- seq(2.5, by = 0.3, length.out = 20)
+
+cat("The generated vector is :",x)
+```
+**I.** Check the class and types of this vector.
+```{r}
+cat("The class of the vector is :",class(x))
+cat("The type of the vector is :",typeof(x))
+```
+**II.** Convert this to complex vector and save with name z.
+```{r}
+# Converting to complex vector
+z <- as.complex(x)
+cat("The converted vecor is :",z)
+```
+**III.** Extract all the elements which is at the eleven places.
+```{r}
+# Extracting the 11th element of the vector
+cat("The element which is at eleventh places is :",x[11])
+```
+**IV.** Extract the first five elements. Thereafter bind them row wise and column wise; and store under the name row_mat.Perform the testing for matrix and vector.
+```{r}
+# Extracting the first 5 elements
+first5 <- x[1:5]
+cat("The first five elements of the vector is :",first5)
+# Binding them row-wise
+row_mat <- rbind(first5)
+cat("Matrix after binding row-wise :",row_mat)
+# checking its type
+cat("The row_mat is a vector :",is.vector(row_mat))
+cat("The row_mat is a matrix :",is.matrix(row_mat))
+# Binding them column-wise
+col_mat <- cbind(first5)
+cat("Matrix after binding column-wise :",col_mat)
+# checking its type
+cat("The col_mat is a vector :",is.vector(col_mat))
+cat("The col_mat is a matrix :",is.matrix(col_mat))
+# checking the type of original vector
+cat("x is a vector :",is.vector(x))
+cat("x is a matrix :",is.matrix(x))
+```
+
+#### **Result :**
+The vector of 20 elements was successfully created in R using `seq()`. Its class and type were identified, and it was successfully converted into a complex vector. The required elements were extracted, and row-wise and column-wise matrices were created using `rbind()` and `cbind()`. The vector and matrix objects were also successfully tested using `is.vector()` and `is.matrix()`.

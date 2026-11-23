@@ -1,0 +1,140 @@
+---
+title: "Practical 10"
+author: "Deepak Kumar Bharti"
+date: '25056765013'
+output: html_document
+---
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+To calculate the mean of the given inter-arrival time data and construct a density histogram with the fitted exponential density function.
+
+#### **Problem :**
+An engineer observes a nuclear reaction and records the inter-arrival times between the emission of beta particles as follows :
+  
+0.894, 0.235, 0.071, 0.459, 0.1, 0.991, 0.424, 0.154, 0.431, 0.919, 0.061, 0.216, 0.082,  
+0.092, 0.186, 0.579, 1.653, 0.83, 0.093, 0.311, 0.429, 2.01, 1.718, 0.041, 0.817, 0.612,  
+0.158, 0.099, 0.712, 2.267, 0.143, 0.527, 0.162, 0.994, 0.091, 0.055, 1.033, 0.076, 0.0149,  
+0.139, 0.752, 2.863, 0.107, 0.866, 0.083, 0.188, 0.365, 0.278, 0.054
+
+Perform the following tasks :
+
+1. Find the mean of the given data set.
+2. Construct a density histogram and superimpose the exponential density function using a suitable parameter value estimated from the data.
+
+#### **Theory :**
+
+- ##### **Inter-arrival Time**
+  **Inter-arrival time** is the time interval between two successive events. In a nuclear reaction, radioactive particles such as beta particles are emitted randomly. The time between two consecutive emissions is called the **inter-arrival time**.
+  
+  If the events occur randomly and independently at a constant average rate, the inter-arrival times can often be modeled using an **exponential distribution**.
+  
+- ##### **Exponential Distribution**
+  The exponential distribution is a continuous probability distribution commonly used to model waiting or inter-arrival times between events occurring according to a **Poisson process**.
+  
+  Its probability density function (PDF) is
+$$
+f(x;\lambda)=\lambda e^{-\lambda x},\qquad x \geq 0
+$$
+  where :
+    - $x$ = inter-arrival or waiting time
+    - $\lambda$ = rate parameter
+    
+    
+  The density is zero for $x<0$.
+  
+  The exponential distribution has the following important properties :
+$$
+E(X) = \frac{1}{\lambda}
+$$
+  and
+$$
+Var(X) = \frac{1}{\lambda^2}
+$$
+  Thus, the mean waiting time is the reciprocal of the event rate.
+
+- ##### **Estimation of the Parameter**
+  For a sample of $n$ observed inter-arrival times
+$$
+x_1, x_2, \dots ,x_n
+$$
+  the sample mean is
+$$
+\bar{x} = \frac{1}{n}\sum_{i=1}^{n}x_i
+$$
+  Since the theoretical mean of an exponential distribution is $1/\lambda$, we estimate the rate parameter by
+$$
+\hat{\lambda} = \frac{1}{\bar{x}}
+$$
+
+- ##### **Density Histogram**
+  A histogram is used to display the distribution of the observed inter-arrival times.
+  
+  A **density histogram** is different from an ordinary frequency histogram because its vertical axis represents **probability density**. The total area under all histogram bars is equal to 1.
+  
+  This makes it possible to directly compare the histogram with a theoretical probability density function.
+  
+##### **Functions Used :**
+- `mean()` : Calculates the arithmetic mean of the given data.
+- `hist()` : Creates a histogram to display the distribution of the data.
+- `curve()` : Plots a mathematical function over an existing graph. Used to superimpose the fitted exponential density.
+- `dexp()` : Calculates the probability density of the exponential distribution for given values of $x$.
+- `legend()` : Adds a legend to the graph to identify the fitted exponential curve.
+- `max()` : Finds the maximum value in the data, used to set the upper limit of the fitted curve.
+- `round()` : Rounds a numerical value to a specified number of decimal places.
+
+#### **Code and Calculation :**
+```{r}
+# Inter-arrival time data
+x <- c(
+  0.894, 0.235, 0.071, 0.459, 0.1, 0.991, 0.424, 0.154, 0.431, 0.919,
+  0.061, 0.216, 0.082, 0.092, 0.186, 0.579, 1.653, 0.83, 0.093, 0.311,
+  0.429, 2.01, 1.718, 0.041, 0.817, 0.612, 0.158, 0.099, 0.712, 2.267,
+  0.143, 0.527, 0.162, 0.994, 0.091, 0.055, 1.033, 0.076, 0.0149, 0.139,
+  0.752, 2.863, 0.107, 0.866, 0.083, 0.188, 0.365, 0.278, 0.054
+)
+
+# Calculating the mean
+mean_x <- mean(x)
+cat("The mean of the given data set is :",mean_x)
+
+# Estimating the exponential parameter
+lambda <- 1 / mean_x
+cat("The estimated value of the exponential parameter lambda is :",lambda)
+
+# Constructing density histogram
+hist(x,
+     probability = TRUE,
+     breaks = "Sturges",
+     col = "lightblue",
+     border = "black",
+     main = "Density Histogram with Fitted Exponential Density",
+     xlab = "Inter-arrival time",
+     ylab = "Density")
+
+# Superimposing fitted exponential density
+curve(dexp(x, rate = lambda),
+      from = 0,
+      to = max(x),
+      add = TRUE,
+      lwd = 2)
+
+# Displaying estimated parameter
+legend("topright",
+       legend = paste("Exponential: lambda =", round(lambda, 4)),
+       lwd = 2)
+```
+
+#### **Results & Conclusions :**
+- The **mean inter-arrival time** for the given nuclear reaction data is **0.5394878**, and the **estimated value ** of exponential rate parameter is **1.85361**.
+
+- Hence, the fitted exponential density is
+$$
+f(x) = 1.85361e^{-1.85361x},\qquad x \geq 0
+$$
+
+- The density histogram shows that most inter-arrival times are close to 0 and the density decreases as time increases, exhibiting the expected **right-skewed exponential pattern**. The fitted exponential curve provides a reasonable representation of the observed data.

@@ -1,0 +1,195 @@
+---
+title: "Practical 13"
+author: "Deepak Kumar Bharti"
+date: '25056765013'
+output: html_document
+---
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+To create and examine vectors, matrices, arrays, lists, and data frames, and to find the class, length, dimension, and structure.
+
+#### **Problem :**
+Create and examine the basic data structures available in R and perform the following tasks :
+
+i. Create a numeric vector and a character vector, and check the class and length of each.
+
+ii. Create a $3 \times 3$ matrix from a numeric vector and check its dimensions and class.
+
+iii. Create a $3 \times 3 \times 2$ array and check its dimensions and class.
+
+iv. Create a list containing a vector, a matrix and a character string, and access its elements.
+
+v. Create a data frame combining a numeric column and a character column, and examine its structure using `str()`.
+
+#### **Theory :**
+R is a programming language and environment widely used for **statistical computing, data analysis, and data visualization**. R provides several built-in data structures for storing and organizing data. The basic data structures used in this practical are **vectors, matrices, arrays, lists, and data frames**.
+
+- ##### **Vector**
+  A vector is the simplest and most commonly used data structure in R. It is a one-dimensional collection of elements of the same data type.
+
+  - Numeric vector: Stores numbers.
+  - Character vector: Stores text or strings.
+
+- ##### **Matrix**
+  A **matrix** is a two-dimensional data structure containing elements of the same data type. It consists of rows and columns.
+
+- ##### **Array**
+  An **array** is a multidimensional data structure that can contain elements of the same data type. A 3-dimensional array can be thought of as a collection of matrices.
+
+- ##### **List**
+  A **list** is a flexible data structure in R that can contain elements of different **data types and structures**. A single list can contain a vector, matrix, character string, or even another list.
+
+- ##### **Data Frame**
+  A **data frame** is a two-dimensional tabular data structure in R. It consists of rows and columns, where different columns can contain different data types.
+
+##### **Functions Used :**
+
+- `c()` – Creates a vector by combining values.
+- `class()` – Checks the class/data type of an object.
+- `length()` – Finds the number of elements in an object.
+- `matrix()` – Creates a matrix.
+- `dim()` – Finds the dimensions of an object.
+- `array()` – Creates a multidimensional array.
+- `list()` – Creates a list containing different types of objects.
+- `$` – Accesses a named element of a list or column of a data frame.
+- `[[ ]]` – Extracts an individual element from a list.
+- `data.frame(`) – Creates a data frame.
+- `str()` – Displays the structure of an R object.
+
+#### **Code and Calculation :**
+**I.** Creating a numeric vector and a character vector, and checking the class and length of each.
+```{r}
+# Creating Numeric vector
+num_vec <- c(85, 90, 78, 92, 88)
+
+# CreatingCharacter vector
+char_vec <- c("Deepak", "Shivam", "Sudhanshu", "Yash", "Kapil")
+
+# Checking class and length
+class_num = class(num_vec)
+length_num = length(num_vec)
+
+class_char = class(char_vec)
+length_char = length(char_vec)
+```
+```{r I, echo = FALSE}
+cat("The numeric vector is :")
+num_vec
+cat("The class of numeric vector is :", class_num)
+cat("The length of numeric vector is :", length_num)
+
+cat("The Character vector is :")
+char_vec
+cat("The class of character vector is :", class_char)
+cat("The length of character vector is :", length_char)
+```
+
+**II.** Creating a $3 \times 3$ matrix from a numeric vector and checking its dimensions and class.
+```{r}
+# Numeric vector
+v <- 1:9
+
+# Creating 3 x 3 matrix
+mat <- matrix(v, nrow = 3, ncol = 3)
+
+# Checking dimensions and class
+dim_mat = dim(mat)
+class_mat = class(mat)
+```
+```{r II, echo = FALSE}
+cat("The numeric vector is :")
+v
+
+cat("The created matrix is :")
+mat
+
+cat("The dimensions of created matrix is :", dim_mat)
+cat("The class of created matrix is :", class_mat)
+```
+
+**III.** Creating a $3 \times 3 \times 2$ array and checking its dimensions and class.
+```{r}
+# Creating a 2 x 3 x 2 array
+arr <- array(1:12, dim = c(2, 3, 2))
+
+# Checking dimensions and class
+dim_arr = dim(arr)
+class_arr = class(arr)
+```
+```{r III, echo = FALSE}
+cat("The created array is :")
+arr
+
+cat("The dimensions of created array is :", dim_arr)
+cat("The class of created array is :", class_arr)
+```
+
+**IV.** Creating a list containing a vector, a matrix and a character string, and accessing its elements.
+```{r}
+# Creating a character string
+string <- "Doing Practical 13"
+
+# Creating a list
+my_list <- list(
+  vector = num_vec,
+  matrix = mat,
+  string = string
+)
+```
+```{r IV, echo = FALSE}
+cat("The created list is :")
+my_list
+```
+```{r}
+cat("Accessing the elements of List :")
+# Accessing elements
+my_list$vector
+my_list$matrix
+my_list$string
+
+cat("Accessing the elements of List using Index :")
+# Alternative indexing
+my_list[[1]]
+my_list[[2]]
+my_list[[3]]
+
+cat("Accessing the individual elements of List using Index :")
+# Accessing individual elements
+my_list$vector[2]
+my_list$matrix[1,2]
+my_list$string
+```
+
+**V.** Creating a data frame combining a numeric column and a character column, and examining its structure using `str()`.
+```{r}
+# Creating numeric column
+marks <- c(85, 90, 78, 92, 88)
+
+# Creating character column
+name <- c("Deepak", "Shivam", "Sudhanshu", "Yash", "Kapil")
+
+# Creating data frame
+student_data <- data.frame(
+  Name = name,
+  Marks = marks
+)
+```
+```{r V, echo = FALSE}
+
+cat("The created Dataframe is :")
+student_data
+```
+```{r}
+# Examining structure
+cat("The structure of the created Dataframe is :")
+str(student_data)
+```
+
+#### **Results & Conclusions :**
+The basic data structures in R were successfully created and examined. A **numeric vector, character vector, 3 × 3 matrix, 2 × 3 × 2 array, list containing different dava types, and a data grame** were k2eated �uccessfully. Their properties w�re examined uskng dunctions sukh ar `clasc()`, `length(�`, `dio()`, and `str*!`. The ehements of the list were also successfully accessed.

@@ -1,0 +1,216 @@
+---
+title: "Practical 31"
+author: "Deepak Kumar Bharti"
+date: '25056765013'
+output: html_document
+---
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+To apply the Wilcoxon Signed-Rank Test in R to test the manufacturer's claim that the median breaking strength of rods is 30 pounds at the 1% level of significance.
+
+#### **Problem :**
+The breaking strength (in pounds) of a random sample of 29 rods made by a manufacturer is given as follows:
+$$
+19, 30, 28, 35, 23, 37, 36, 32, 40, 24,
+$$
+$$
+31, 33, 21, 36, 30, 32, 26, 40, 38, 28,
+$$
+$$
+30, 41, 22, 43, 25, 28, 24, 37, 17.
+$$
+On the basis of this sample, test the manufacturer's claim that the median breaking strength of the rods is 30 pounds using the **Wilcoxon signed-rank test** at the 1% level of significance. Assume that the distribution of the breaking strengths is symmetric about its median.
+
+#### **Theory :**
+##### **Wilcoxon Signed-Rank Test**
+The **Wilcoxon Signed-Rank Test** is a non-parametric statistical test used to determine whether the median of a population is significantly different from a specified value. It is used as an alternative to the one-sample t-test when the assumption of normality is not satisfied.
+
+The test is based on the differences between individual observations and the hypothesized population median. These differences are ranked according to their absolute values, and the positive and negative ranks are compared to determine whether a significant difference exists.
+
+In this practical, the Wilcoxon Signed-Rank Test is used to examine the manufacturer's claim that the median breaking strength of rods is 30 pounds, based on a random sample of 29 rods, at the 1% level of significance.
+
+##### **Objectives of the Test**
+- To test the manufacturer's claim regarding the population median breaking strength of rods.
+- To determine whether the median breaking strength differs significantly from 30 pounds.
+- To analyse the sample data using a non-parametric statistical method.
+- To perform the hypothesis test at the 1% level of significance using R.
+
+##### **Assumptions of the Wilcoxon Signed-Rank Test**
+1. The observations should be randomly selected from the population.
+2. The observations must be independent of each other.
+3. The data should be measured on an ordinal, interval or ratio scale.
+4. The distribution of observations should be symmetric about its median.
+5. The differences between observations and the hypothesized median should be meaningfully rankable.
+
+##### **Hypotheses**
+The hypotheses for this practical are:
+
+**Null Hypothesis (H0):**
+
+The median breaking strength of the rods is 30 pounds.
+
+$$
+H_0: M = 30
+$$
+
+**Alternative Hypothesis (H1):**
+
+The median breaking strength of the rods is not 30 pounds.
+
+$$
+H_1: M \neq 30
+$$
+
+##### **Procedure of the Wilcoxon Signed-Rank Test**
+The test is performed using the following steps:
+
+1. Calculate the difference between each observation and the hypothesized median (30 pounds).
+2. Ignore observations having zero differences.
+3. Arrange the absolute differences in ascending order.
+4. Assign ranks to the absolute differences. For tied values, assign average ranks.
+5. Attach the original positive or negative signs to the ranks.
+6. Calculate the sum of positive ranks and the sum of negative ranks.
+7. Determine the test statistic and corresponding p-value.
+8. Compare the p-value with the specified level of significance to make the final decision.
+
+##### **Formula**
+The differences are calculated as:
+
+$$
+d_i = X_i - M_0
+$$
+
+Where:
+
+- `Xi` = Individual breaking strength of a rod.
+- `M0` = Hypothesized population median (30 pounds).
+- `di` = Difference between the observation and hypothesized median.
+
+The test statistic is based on the positive and negative rank sums:
+
+$$
+W^+ = \sum R_i^+
+$$
+
+$$
+W^- = \sum R_i^-
+$$
+
+Where:
+
+- `W+` = Sum of positive ranks.
+- `W-` = Sum of negative ranks.
+- `Ri` = Rank of the absolute difference.
+
+##### **Level of Significance**
+The level of significance represents the probability of rejecting a true null hypothesis.
+
+In this practical:
+
+$$
+\alpha = 0.01 = 1\%
+$$
+
+Since the alternative hypothesis is two-sided, the test examines whether the median breaking strength is either greater than or less than 30 pounds.
+
+##### **Decision Rule**
+The decision is made by comparing the p-value with the level of significance.
+
+- If the p-value is less than 0.01, reject the null hypothesis.
+- If the p-value is greater than or equal to 0.01, do not reject the null hypothesis.
+
+##### **Functions Used :**
+- `c()` – Used to create a vector containing the breaking strength of 29 rods.
+- `print()` – Used to display the given data and test results.
+- `length()` – Used to calculate the number of observations in the sample.
+- `wilcox.test()` – Used to perform the one-sample Wilcoxon Signed-Rank Test.
+- `paste()` – Used to combine text with calculated values for displaying output.
+- `p.value` – Used to extract the p-value from the test results.
+- `if...else` – Used to make the statistical decision based on the p-value.
+- `alpha` – Used to store the level of significance (0.01).
+- `result$p.value` – Used to access the p-value stored in the test result object.
+
+#### **Code and Calculation :**
+```{r}
+# Wilcoxon Signed-Rank Test
+
+# Step 1: Enter the breaking strength data of 29 rods (in pounds)
+strength <- c(19, 30, 28, 35, 23, 37, 36, 32, 40, 24,
+              31, 33, 21, 36, 30, 32, 26, 40, 38, 28,
+              30, 41, 22, 43, 25, 28, 24, 37, 17)
+
+# Step 2: Display the given data
+print("Breaking strength of 29 rods:")
+print(strength)
+
+# Step 3: Calculate the sample size
+n <- length(strength)
+print(paste("Sample size:", n))
+
+# Step 4: Set the hypothesized population median
+mu <- 30
+
+# Step 5: Set the level of significance
+alpha <- 0.01
+
+# Step 6: Perform the Wilcoxon Signed-Rank Test
+# alternative = "two.sided" tests whether the median
+# breaking strength differs from 30 pounds.
+# exact = FALSE is used because the data contain ties
+# and observations equal to the hypothesized median.
+
+result <- wilcox.test(strength,
+                      mu = mu,
+                      alternative = "two.sided",
+                      exact = FALSE,
+                      correct = TRUE)
+
+# Step 7: Display the test results
+print(result)
+
+# Step 8: Extract the p-value
+p_value <- result$p.value
+
+print(paste("P-value:", p_value))
+
+# Step 9: Make the statistical decision
+if (p_value < alpha) {
+  print("Reject the Null Hypothesis (H0)")
+  print("The median breaking strength differs significantly from 30 pounds.")
+} else {
+  print("Do not reject the Null Hypothesis (H0)")
+  print("There is insufficient evidence to conclude that the median breaking strength differs from 30 pounds.")
+}
+
+# Step 10: Display the final conclusion
+print(paste("Level of significance:", alpha))
+
+```
+
+#### **Results :**
+The Wilcoxon Signed-Rank Test was performed in R to examine the manufacturer's claim that the median breaking strength of the rods is 30 pounds.
+
+The test produced the following results:
+
+- **Sample size (n):** 29 rods
+- **Test statistic (V):** 193
+- **P-value:** 0.6654
+- **Level of significance (α):** 0.01 (1%)
+- **Hypothesized median:** 30 pounds
+- **Alternative hypothesis:** The median breaking strength is not equal to 30 pounds.
+
+##### **Statistical Decision**
+Since the p-value (0.6654) is greater than the level of significance (0.01), we do not reject the null hypothesis (H0).
+$$
+0.6654 > 0.01
+$$
+
+#### **Conclusions :**
+At the 1% level of significance, there is insufficient statistical evidence to conclude that the median breaking strength of the rods differs significantly from 30 pounds.
+
+Therefore, the manufacturer's claim that the median breaking strength of the rods is 30 pounds is **not rejected**.

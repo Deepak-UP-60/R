@@ -1,0 +1,113 @@
+---
+title: "Practical 8"
+author: "Deepak Kumar Bharti"
+date: '25056765013'
+output: html_document
+---
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+To plot the probability density function and distribution function of standard normal distribution in R over the interval (-6,6), and to mark the points -6(1)6 on the density curve.
+
+#### **Theory :**
+The **normal distribution** is one of the most important continuous probability distributions in statistics. A normal distribution is symmetric about its mean and has a bell-shaped curve. The **standard normal distribution** is a special case of the normal distribution with:
+
+$$
+\mu = 0,\qquad \sigma = 1
+$$
+
+Its probability density function (PDF) is given by:
+
+$$
+f(x)=\frac{1}{\sqrt{2\pi}}e^{-x^2/2},
+\qquad -\infty < x < \infty
+$$
+
+The density curve is symmetric about $x=0$, reaches its maximum value at $x=0$, and approaches zero as $x$ moves toward either $-\infty$ or $+\infty$.
+
+The **distribution function**, or **cumulative distribution function (CDF)**, gives the probability that a standard normal random variable $X$ takes a value less than or equal to $x$:
+
+$$
+F(x)=P(X\leq x)
+$$
+
+For the standard normal distribution,
+
+$$
+F(x)=\int_{-\infty}^{x}
+\frac{1}{\sqrt{2\pi}}e^{-t^2/2}\,dt
+$$
+
+The CDF increases from 0 to 1 and is symmetric around $x=0$, where :
+
+$$
+F(0)=0.5
+$$
+
+In **R**, the standard normal distribution can be plotted using the functions:
+
+- `dnorm(x)` — calculates the probability density function.
+- `pnorm(x)` — calculates the cumulative distribution function.
+- `seq(-6, 6, by = 1)` — generates the points $-6,-5,\ldots,6$.
+
+#### **Problem :**
+Plot the density function of the standard normal distribution in the interval (-6,6) and add the points -6(1)6 in the obtained density curve. Also, plot the curve of the distribution function.
+
+#### **Code and Calculation :**
+```{r}
+# Values from -6 to -6
+x <- seq(-6,6, by = 0.01)
+
+# Standard normal density
+y_density <- dnorm(x)
+
+# Standard normal distribution function (CDF)
+y_cdf <- pnorm(x)
+
+# Points -6, -5, .... , 6
+x_points <- seq(-6,6, by = 1)
+y_points <- dnorm(x_points)
+
+# Ploting Density function
+plot(x, y_density,
+    type = "l",
+    lwd = 2,
+    col = "blue",
+    main = "Standard Normal Density Function",
+    xlab = "x",
+    ylab = "Density",
+    xlim = c(-6, 6))
+
+# Add points -6(1)6
+points(x_points, y_points,
+    pch = 19,
+    col = "red")
+
+# Labeling the points
+text(x_points, y_points,
+    labels = x_points,
+    pos = 3,
+    cex = 0.7)
+    
+# Ploting the Distribution Function (CDF)
+plot(x, y_cdf,
+    type = "l",
+    lwd = 2,
+    col = "darkgreen",
+    main = "Standard Normal Distribution Function",
+    xlab = "x",
+    ylab = "F(x) = P(X <= x)",
+    xlim = c(-6, 6),
+    ylim = c(0, 1))
+```
+
+#### **Result :**
+The **probability density function** of the standard normal distribution was successfully plotted over the interval $(-6,6)$, and the points $-6,-5,\ldots,6$ were added to the density curve.
+
+The **cumulative distribution function (CDF)** of the standard normal distribution was also successfully plotted using R.
+
+Hence, we successfully plotted the **density function and distribution function of the standard normal distribution using R**.

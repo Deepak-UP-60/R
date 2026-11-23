@@ -1,0 +1,391 @@
+---
+title: "Practical 23"
+author: "Deepak Kumar Bharti"
+date: '25056765013'
+output: html_document
+---
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+To perform Fisher's Linear Discriminant Analysis on the Iris dataset and classify flowers into Setosa and Versicolor species. Also, to test whether selected variables and a linear function can be used for discrimination.
+
+#### **Problem :**
+##### **Classification and Discriminant Analysis**
+Consider the iris dataset. The data gives measurements of $4$ characters, namely, sepal length $(X_1)$, sepal width $(X_2)$, petal length $(X_3)$ and petal width $(X_4)$.
+
+Run the following code to generate two independent random samples of flowers of two species.
+```{r, eval=FALSE}
+Species1 = iris[iris$Species == "setosa", ][1:20, ]
+Species2 = iris[iris$Species == "versicolor", ][1:15, ]
+```
+
+(a) Compute Fisher's Linear Discriminating Function and use it to classify an observation $(5.9, 3.8, 4.2, 1.3)$ into one of these two species.
+
+(b) Test whether:
+  
+    **i.** The petal and the sepal length alone are sufficient for discrimination.
+
+    **ii.** A linear function $(X_1 + X_2 + X_3 + X_4)$ can be used for discrimination.
+
+#### **Theory :**
+##### **Classification and Discriminant Analysis**
+Discriminant Analysis is a multivariate statistical technique used to classify observations into two or more predefined groups based on their measured characteristics. It identifies a combination of variables that best distinguishes the groups and helps predict the group membership of new observations.
+
+In this practical, Fisher's Linear Discriminant Analysis (LDA) is applied to the Iris dataset to distinguish between two species: *Setosa* and *Versicolor*.
+
+The dataset consists of four variables:
+
+- $X_1$: Sepal Length
+- $X_2$: Sepal Width
+- $X_3$: Petal Length
+- $X_4$: Petal Width
+
+We consider 20 observations of Setosa and 15 observations of Versicolor.
+
+- ##### **Fisher's Linear Discriminant Analysis :**
+  Fisher's Linear Discriminant Analysis is a statistical method that finds a linear combination of explanatory variables to maximize the separation between two groups.
+  
+  The main principle is to maximize the ratio of between-group variation to within-group variation. This ensures that observations belonging to different groups are separated as much as possible, while observations within the same group remain close together.
+    
+  The general form of Fisher's Linear Discriminant Function is:
+$$
+Z = a_1X_1 + a_2X_2 + \cdots + a_pX_p
+$$
+  For the Iris dataset, it is:
+$$
+Z = a_1X_1 + a_2X_2 + a_3X_3 + a_4X_4
+$$
+  Where :
+  
+  - $Z$ is the discriminant score.
+  - $X_1, X_2, X_3, X_4$ are the four measured variables.
+  - $a_1, a_2, a_3, a_4$ are the discriminant coefficients.
+  
+  These coefficients are chosen to maximize the separation between the two species.
+    
+  For two groups, Fisher's discriminant direction is proportional to:
+$$
+\mathbf{a} = S_W^{-1}(\bar{X}_1 - \bar{X}_2)
+$$
+  Where :
+  
+  - $S_W$ is the pooled within-group covariance matrix.
+  - $\bar{X}_1$ and $\bar{X}_2$ are the mean vectors of the two groups.
+
+- ##### **Classification of a New Observation :**
+  After obtaining the discriminant function, a new observation can be classified into one of the predefined groups using its discriminant score.
+  
+  The classification is based on the position of the observation relative to the discriminant boundary or, equivalently, on its posterior probabilities of belonging to each group.
+    
+  In this practical, the given observation is:
+$$
+X = (5.9, 3.8, 4.2, 1.3)
+$$
+  Its four measurements are substituted into the fitted discriminant model to determine whether it belongs to Setosa or Versicolor.
+  
+  The observation is assigned to the group with the higher posterior probability.
+
+- ##### **Discrimination Using Selected Variables :**
+  In some situations, all explanatory variables may not be necessary for effective classification. A smaller number of variables may provide sufficient information to distinguish between groups.
+  
+  In this practical, we investigate whether **Sepal Length ($X_1$) and Petal Length ($X_3$)** alone are sufficient for discriminating between Setosa and Versicolor.
+  
+  For this purpose, LDA is performed using only these two variables.
+  
+  The classification performance is evaluated using a confusion matrix and classification accuracy.
+  
+  The confusion matrix compares the actual group membership with the predicted group membership.
+    
+  Classification accuracy is calculated as:
+$$
+\text{Accuracy} =
+\frac{\text{Number of correct predictions}}
+{\text{Total number of observations}} \times 100
+$$
+  A higher accuracy indicates better classification performance on the evaluated observations.
+
+- ##### **Discrimination Using a Linear Function :**
+  A linear function is an expression in which the variables occur only in the first degree.
+  
+  In this practical, we consider the following linear function:
+$$
+Z = X_1 + X_2 + X_3 + X_4
+$$
+  The value of this function is calculated for every flower observation. The mean values of $Z$ are then compared between Setosa and Versicolor.
+  
+  To determine whether the difference between the two group means is statistically significant, an independent two-sample t-test is performed.
+  
+  The hypotheses are:
+  
+  **Null Hypothesis ($H_0$):**
+$$
+\mu_1 = \mu_2
+$$
+  There is no significant difference between the mean values of the linear function for the two species.
+  
+  **Alternative Hypothesis ($H_1$):**
+$$
+\mu_1 \neq \mu_2
+$$
+  There is a significant difference between the mean values of the linear function for the two species.
+    
+  The decision is made at a 5% level of significance:
+  
+  - If the p-value is less than 0.05, reject the null hypothesis.
+  - If the p-value is greater than 0.05, do not reject the null hypothesis.
+  
+  A significant difference indicates that the linear function provides information for distinguishing between the two species, although it does not necessarily guarantee perfect classification.
+
+##### **Functions Used :**
+The analysis is carried out using the R programming language. The `MASS` package provides the `lda()` function, which performs Linear Discriminant Analysis.
+
+The following functions are used:
+
+- `iris` : Loads the Iris dataset.
+- `lda()` : Performs Linear Discriminant Analysis.
+- `predict()` : Predicts the species of observations.
+- `table()` : Creates a confusion matrix.
+- `mean()` : Calculates the arithmetic mean.
+- `aggregate()` : Calculates group-wise statistics.
+- `t.test()` : Performs a two-sample t-test.
+
+#### **Code and Calculation :**
+**Loading the Dataset and Selecting Samples :**
+```{r}
+# Loading required package
+library(MASS)
+
+# Loading Iris dataset
+data(iris)
+
+# Selecting first 20 observations of Setosa
+Species1 <- iris[iris$Species == "setosa", ][1:20, ]
+
+# Selecting first 15 observations of Versicolor
+Species2 <- iris[iris$Species == "versicolor", ][1:15, ]
+
+# Combining both samples
+data1 <- rbind(Species1, Species2)
+
+# Displaying the combined dataset
+print(data1)
+
+# Checking the number of observations
+table(data1$Species)
+```
+
+##### **(a) Fisher's Linear Discriminant Function and Classification**
+**Step 1: Applying Fisher's Linear Discriminant Analysis**
+```{r}
+# Fitting Linear Discriminant Analysis model
+model <- lda(Species ~ Sepal.Length + Sepal.Width +
+               Petal.Length + Petal.Width,
+             data = data1)
+
+# Displaying the model
+print(model)
+```
+
+**Step 2: Obtaining Discriminant Coefficients**
+```{r}
+# Displaying discriminant coefficients
+print(model$scaling)
+```
+
+**Step 3: Calculating Group Means**
+```{r}
+# Displaying group means
+print(model$means)
+```
+
+**Step 4: Classifying the Given Observation**
+
+Given observation:
+
+(5.9, 3.8, 4.2, 1.3)
+```{r}
+# Creating a new observation
+new_flower <- data.frame(
+  Sepal.Length = 5.9,
+  Sepal.Width = 3.8,
+  Petal.Length = 4.2,
+  Petal.Width = 1.3
+)
+
+# Predicting the species
+result <- predict(model, newdata = new_flower)
+
+# Displaying predicted species
+print(result$class)
+
+# Displaying posterior probabilities
+print(result$posterior)
+```
+
+##### **(b) Testing the Conditions for Discrimination**
+- **(i) :** Whether Petal Length and Sepal Length Alone Are Sufficient for Discrimination.
+
+**Step 1: Fitting LDA Using Two Variables**
+```{r}
+# Applying LDA using Sepal Length and Petal Length
+model2 <- lda(Species ~ Sepal.Length + Petal.Length,
+              data = data1)
+
+# Displaying the model
+print(model2)
+```
+
+**Step 2: Predicting Species**
+```{r}
+# Predicting species for the observations
+pred2 <- predict(model2, newdata = data1)
+
+# Displaying predicted classes
+print(pred2$class)
+```
+
+**Step 3: Construct Confusion Matrix**
+```{r}
+# Comparing actual and predicted species
+confusion_matrix <- table(
+  Actual = data1$Species,
+  Predicted = pred2$class
+)
+
+print(confusion_matrix)
+```
+
+**Step 4: Calculate Classification Accuracy**
+```{r}
+# Calculating classification accuracy
+accuracy <- mean(pred2$class == data1$Species) * 100
+
+print(paste("Classification Accuracy =", accuracy, "%"))
+```
+- **(ii) :** Whether the Linear Function (X1 + X2 + X3 + X4) Can Be Used for Discrimination
+
+**Step 1: Calculating the Linear Function**
+
+The linear function is:
+$$
+Z = X_1 + X_2 + X_3 + X_4
+$$
+
+```{r}
+# Calculate the linear function
+data1$Z <- data1$Sepal.Length +
+           data1$Sepal.Width +
+           data1$Petal.Length +
+           data1$Petal.Width
+
+# Display calculated values
+print(data1[, c("Species", "Z")])
+```
+
+**Step 2: Calculate Group-wise Mean**
+```{r}
+# Calculating mean of Z for each species
+group_mean <- aggregate(
+  Z ~ Species,
+  data = data1,
+  FUN = mean
+)
+
+print(group_mean)
+```
+
+**Step 3: Calculate Group-wise Standard Deviation**
+```{r}
+# Calculating standard deviation
+group_sd <- aggregate(
+  Z ~ Species,
+  data = data1,
+  FUN = sd
+)
+
+print(group_sd)
+```
+
+**Step 4: Perform Independent Two-Sample t-test**
+
+Hypotheses :
+
+- Null Hypothesis (H0):
+$$
+\mu_1 = \mu_2
+$$
+
+- Alternative Hypothesis (H1):
+$$
+\mu_1 \neq \mu_2
+$$
+
+```{r}
+# Performing two-sample t-test
+test_result <- t.test(Z ~ Species, data = data1)
+
+# Displaying test results
+print(test_result)
+```
+
+**Step 5: Decision Based on p-value**
+```{r}
+# Extract p-value
+p_value <- test_result$p.value
+
+# Set significance level
+alpha <- 0.05
+
+# Decision
+if (p_value < alpha) {
+  print("Reject Null Hypothesis")
+  print("There is a significant difference between the two species.")
+} else {
+  print("Do not reject Null Hypothesis")
+  print("There is no significant difference between the two species.")
+}
+```
+
+#### **Results :**
+**(a) : Fisher's Linear Discriminant Function**
+
+The discriminant function obtained is:
+$$
+Z = 0.7038684X_1 - 3.7540163X_2
++ 0.3797462X_3 + 9.2840428X_4
+$$
+The given observation $(5.9, 3.8, 4.2, 1.3)$ is classified as **Versicolor**, with posterior probability approximately 1.
+
+**(b) : (i) - Discrimination Using Sepal Length and Petal Length**
+
+The classification accuracy obtained using only Sepal Length and Petal Length is **100%**.
+
+All 35 observations (20 Setosa and 15 Versicolor) were correctly classified. Hence, these two variables are sufficient for discrimination in the given sample.
+
+**(b) : (ii) - Discrimination Using the Linear Function**
+
+The linear function considered is:
+
+$$
+Z = X_1 + X_2 + X_3 + X_4
+$$
+
+The group means obtained are:
+
+- Setosa = 10.1850
+- Versicolor = 14.3333
+
+The Welch two-sample t-test gives:
+
+$$
+t = -8.9933, \quad p = 1.176 \times 10^{-8}
+$$
+
+Since the p-value is less than 0.05, we reject the null hypothesis. Therefore, the linear function shows a significant difference between the two species.
+
+#### **Conclusions :**
+Fisher's Linear Discriminant Analysis successfully classified the given flower as Versicolor. Sepal Length and Petal Length achieved 100% training accuracy, while the linear function $X_1 + X_2 + X_3 + X_4$ showed a statistically significant difference between the two species.

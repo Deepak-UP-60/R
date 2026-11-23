@@ -1,0 +1,114 @@
+---
+title: "Practical 6"
+author: "Deepak Kumar Bharti"
+date: '25056765013'
+output: html_document
+---
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+To generate two sequences of size 25, create two 5×5 matrices using these sequences, perform matrix operations, extract the required columns, and combine the matrices row-wise and column-wise using R.
+
+#### **Theory :**
+In R, **sequences and matrices** are important data structures used for numerical calculations. The `seq()` function is used to generate a sequence of numbers with a specified starting value and increment. The `matrix()` function is used to arrange these values into rows and columns.
+
+R provides operators such as `+`, `-`, and `%*%` for matrix operations. Columns can be extracted using indexing, while `cbind()` and `rbind()` are used to combine matrices **column-wise** and **row-wise**, respectively. These operations help in efficient manipulation and analysis of numerical data in R.
+
+#### **Problem :**
+Generate two sequences, each of size 25, starting with 1 by a jump of 0.15 and 0.45. Using these two sequences make two matrices of order 5X5, with names mat_B and mat_C.
+
+```{r}
+# Generate two sequences of size 25
+seq1 <- seq(from = 1, by = 0.15, length.out = 25)
+seq2 <- seq(from = 1, by = 0.45, length.out = 25)
+
+# Create 5 x 5 matrices
+mat_B <- matrix(seq1, nrow = 5, ncol = 5)
+mat_C <- matrix(seq2, nrow = 5, ncol = 5)
+```
+```{r Matrices, echo=FALSE}
+cat("The two matrices from the generated sequence are :")
+```
+```{r}
+mat_B
+mat_C
+```
+
+
+**I.** Perform addition, subtraction and multiplication with the above two matrices.
+
+```{r Sum, echo=FALSE}
+cat("The sum of both matrices is :")
+```
+```{r}
+mat_B + mat_C
+```
+
+```{r Sub, echo=FALSE}
+cat("The substraction of mat_C from mat_B is :")
+```
+```{r}
+mat_B - mat_C
+```
+
+```{r Product, echo=FALSE}
+cat("The product of both matrices is :")
+```
+```{r}
+mat_B %*% mat_C
+```
+
+**II.** Extract the 1^st^, 3^rd^ and 5^th^ column of the mat_B and store under the name mat_D.
+
+```{r}
+# Extracting 1st, 3rd and 5th columns into mat_D 
+mat_D <- mat_B[, c(1, 3, 5)]
+```
+```{r Extract, echo=FALSE}
+cat("The matrix after extracting 1st, 3rd and 5th columns into mat_D is :")
+```
+```{r}
+mat_D
+```
+
+**III.** Combine 5^th^ column of mat_C to mat_D.
+
+```{r}
+mat_D <- cbind(mat_D, mat_C[, 5])
+```
+```{r Combine, echo=FALSE}
+cat("The matrix after Combining 5th column of mat_C to mat_D is :")
+```
+```{r}
+mat_D
+```
+
+**IV.** Combine mat_B and mat_C row wise and column wise.
+
+```{r}
+# Combining row-wise
+rowwise <- rbind(mat_B, mat_C)
+```
+```{r CombineRowWise, echo=FALSE}
+cat("The matrix after Combining mat_B and mat_C row wise is :")
+```
+```{r}
+rowwise
+```
+```{r}
+# Combining column-wise
+columnwise <- cbind(mat_B, mat_C)
+```
+```{r CombineColumnWise, echo=FALSE}
+cat("The matrix after Combining mat_B and mat_C column wise is :")
+```
+```{r}
+columnwise
+```
+
+#### **Result :**
+The two sequences of size 25 were generated, matrices `mat_B` and `mat_C` of order 5×5 were created, arithmetic operations were performed, the required columns were extracted into `matD`, and the matrices were successfully combined row-wise and column-wise.

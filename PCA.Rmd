@@ -1,0 +1,606 @@
+---
+title: "Practical 26"
+author: "Deepak Kumar Bharti"
+date: '25056765013'
+output: html_document
+---
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+
+#### **Problem :**
+##### **Principal Component Analysis (PCA)**
+Write a program in R which, when given a dataset, computes the principal components and their variances by the method of iteration. The Iris dataset in R gives the measurements on 4 characters, viz. sepal length $(X_1)$, sepal width $(X_2)$, petal length $(X_3)$ and petal width $(X_4)$ of three species of flowers. Use your code to find the first two sample principal components and their sample variances. Also test whether the first two population principal components explain more than 95% of the total variation.
+
+#### **Theory :**
+##### **Principal Component Analysis (PCA)**
+Principal Component Analysis (PCA) is a statistical technique used for dimensionality reduction. It transforms a set of correlated variables into a smaller set of uncorrelated variables called principal components while retaining maximum possible information (variance).
+
+In this practical, PCA is applied to the Iris dataset, which contains measurements of three flower species: Setosa, Versicolor and Virginica.
+
+The dataset consists of four numerical attributes:
+
+- Sepal Length ($X_1$)
+- Sepal Width ($X_2$)
+- Petal Length ($X_3$)
+- Petal Width ($X_4$)
+
+The objective is to calculate the first two principal components, determine their sample variances and examine whether the first two population principal components explain more than 95% of the total variation.
+
+##### **Data Preprocessing and Centering**
+Before performing PCA, each variable is centered by subtracting its sample mean to obtain a mean of approximately zero.
+
+The centering formula is:
+
+$$
+X_{ij}^{*}=X_{ij}-\bar X_j
+$$
+
+Where:
+
+- $X_{ij}$ = Original observation.
+- $\bar X_j$ = Sample mean of the variable.
+- $X_{ij}^{*}$ = Centered observation.
+
+In this practical, all four numerical attributes are centered before calculating the sample covariance matrix.
+
+##### **Sample Covariance Matrix**
+The sample covariance matrix describes the variances and covariances among the variables. It is used in PCA to identify relationships between different attributes.
+
+The sample covariance is calculated as:
+
+$$
+S_{ij}=\frac{1}{n-1}
+\sum_{k=1}^{n}(X_{ki}-\bar X_i)(X_{kj}-\bar X_j)
+$$
+
+Where $n$ is the number of observations and $\bar X_i,\bar X_j$ are the respective sample means.
+
+The covariance matrix for four variables is:
+
+$$
+S=
+\begin{bmatrix}
+S_{11}&S_{12}&S_{13}&S_{14}\\
+S_{21}&S_{22}&S_{23}&S_{24}\\
+S_{31}&S_{32}&S_{33}&S_{34}\\
+S_{41}&S_{42}&S_{43}&S_{44}
+\end{bmatrix}
+$$
+
+The diagonal elements represent variances, while the off-diagonal elements represent covariances.
+
+**Application:** The sample covariance matrix of the four Iris attributes is calculated and used to obtain the principal components.
+
+##### **Principal Components**
+Principal components are new variables formed as linear combinations of the original variables. They are arranged in decreasing order of the variance they explain.
+
+- **PC1:** Explains the maximum possible variance.
+- **PC2:** Explains the maximum remaining variance and is uncorrelated with PC1.
+- **PC3:** Explains the maximum remaining variance after PC1 and PC2.
+- **PC4:** Explains the remaining variance.
+
+The first two principal components can be expressed as:
+
+$$
+PC_1=a_1X_1+a_2X_2+a_3X_3+a_4X_4
+$$
+
+$$
+PC_2=b_1X_1+b_2X_2+b_3X_3+b_4X_4
+$$
+
+Here, $a_i$ and $b_i$ are coefficients obtained from the eigenvectors of the covariance matrix.
+
+All principal components are mutually orthogonal and therefore uncorrelated.
+
+##### **Eigenvalues and Eigenvectors**
+Eigenvalues and eigenvectors are used to determine the principal components by solving:
+
+$$
+Sv=\lambda v
+$$
+
+Where:
+
+- $S$ = Sample covariance matrix.
+- $v$ = Eigenvector.
+- $\lambda$ = Eigenvalue.
+
+**Eigenvalues:** Represent the variance explained by their corresponding principal components. Larger eigenvalues indicate greater explained variance.
+
+**Eigenvectors:** Determine the directions of principal components. Their elements provide the coefficients for constructing principal components from the original variables.
+
+**Application:** Eigenvalues and eigenvectors are calculated to obtain the first two principal components and their sample variances.
+
+##### **Power Iteration and Deflation Methods**
+- ##### **Power Iteration Method :**
+  Power Iteration is an iterative numerical method used to calculate the largest eigenvalue and its corresponding eigenvector of a square matrix.
+
+  **Working steps:**
+
+  1. Start with an initial non-zero vector.
+  2. Multiply it by the covariance matrix.
+  3. Normalize the resulting vector.
+  4. Repeat multiplication and normalization.
+  5. Continue until convergence.
+  6. Calculate the corresponding eigenvalue.
+
+  The iterative formula is:
+$$
+v_{k+1}=\frac{Sv_k}{\|Sv_k\|}
+$$
+
+  The corresponding eigenvalue is:
+$$
+\lambda=v^TSv
+$$
+
+- ##### **Deflation Method :**
+  Deflation removes the contribution of an already calculated principal component to obtain the next component.
+
+  The deflated covariance matrix is:
+$$
+S_1=S-\lambda_1v_1v_1^T
+$$
+
+  Where $\lambda_1$ and $v_1$ are the first eigenvalue and eigenvector.
+
+  Power Iteration is then applied to the deflated matrix to calculate the second principal component.
+
+  **Application:** Both methods are used to calculate the first two principal components and their sample variances.
+
+##### **Variance Explained by Principal Components**
+The proportion of total variance explained by a principal component is calculated using its eigenvalue.
+
+$$
+P_i=\frac{\lambda_i}{\sum_{j=1}^{p}\lambda_j}
+$$
+
+Percentage of variance explained:
+
+$$
+P_i(\%)=\frac{\lambda_i}{\sum_{j=1}^{p}\lambda_j}\times100
+$$
+
+Cumulative percentage explained by the first two components:
+
+$$
+P_{1,2}=
+\frac{\lambda_1+\lambda_2}
+{\sum_{j=1}^{p}\lambda_j}\times100
+$$
+
+Where $p$ is the total number of principal components.
+
+A higher cumulative percentage indicates that the first two components retain more information from the original dataset.
+
+**Application:** The cumulative variance explained by PC1 and PC2 is calculated to examine whether they retain more than 95% of the total variation.
+
+##### **Hypothesis Testing and Bootstrap Method**
+Hypothesis testing is used to examine whether the first two population principal components explain more than 95% of the total variation.
+
+**Null Hypothesis ($H_0$):**
+
+$$
+H_0:\frac{\lambda_1+\lambda_2}
+{\sum_{j=1}^{4}\lambda_j}\leq0.95
+$$
+
+**Alternative Hypothesis ($H_1$):**
+
+$$
+H_1:\frac{\lambda_1+\lambda_2}
+{\sum_{j=1}^{4}\lambda_j}>0.95
+$$
+
+- ##### **Bootstrap Method :**
+  Bootstrap is a statistical resampling technique used to estimate the sampling distribution of a statistic.
+
+  **Steps involved:**
+
+  1. Select observations randomly with replacement from the original dataset.
+  2. Calculate the covariance matrix of the bootstrap sample.
+  3. Calculate its eigenvalues.
+  4. Determine the proportion of variance explained by the first two components.
+  5. Repeat the process multiple times.
+  6. Calculate the one-sided 95% lower confidence bound.
+
+  If the lower confidence bound exceeds 0.95, there is evidence that the first two population principal components explain more than 95% of the total variation.
+
+  **Application:** Bootstrap resampling is used to examine the stated hypothesis about the population variance explained by the first two components.
+
+##### **Principal Component Scores and Visualization**
+Principal component scores represent the transformed observations in the new principal component coordinate system.
+
+They are calculated by multiplying the centered data matrix by the eigenvector matrix.
+
+$$
+Z=XV
+$$
+
+Where:
+
+- $X$ = Centered data matrix.
+- $V$ = Eigenvector matrix.
+- $Z$ = Principal component score matrix.
+
+The first two component scores are plotted in two dimensions to visualize the distribution of the Iris observations and species.
+
+##### **Advantages of PCA**
+- Reduces the dimensionality of a dataset.
+- Retains maximum possible variance in fewer components.
+- Identifies relationships among variables.
+- Produces uncorrelated principal components.
+- Simplifies data visualization.
+- Reduces redundancy in multivariate data.
+
+##### **Functions Used :**
+The following R functions are used to perform Principal Component Analysis (PCA) on the Iris dataset:
+
+- `data()` – Loads the built-in Iris dataset.
+- `head()` – Displays the first few observations.
+- `dim()` – Returns the dimensions of the dataset.
+- `str()` – Displays the structure of the dataset.
+- `colMeans()` – Calculates the mean of each numerical variable.
+- `scale()` – Centers the data by subtracting the column means.
+- `cov()` – Calculates the sample covariance matrix.
+- `nrow()` – Returns the number of rows in the dataset.
+- `sqrt()` – Calculates the square root of a value.
+- `sum()` – Calculates the sum of values.
+- `as.vector()` – Converts a matrix or array into a vector.
+- `as.numeric()` – Converts a value into numeric format.
+- `t()` – Calculates the transpose of a matrix or vector.
+- `tcrossprod()` – Calculates the product of a matrix and its transpose.
+- `function()` – Defines a user-defined function for the Power Iteration method.
+- `return()` – Returns the result from a user-defined function.
+- `cbind()` – Combines vectors or matrices column-wise.
+- `colnames()` – Assigns column names to a matrix.
+- `eigen()` – Calculates eigenvalues and eigenvectors of a matrix.
+- `quantile()` – Calculates the bootstrap confidence bound.
+- `set.seed()` – Ensures reproducibility of random results.
+- `sample()` – Selects observations randomly during bootstrap resampling.
+- `numeric()` – Creates a numeric vector.
+- `cumsum()` – Calculates cumulative sums of values.
+- `barplot()` – Creates a bar graph of the percentage of variance explained.
+- `paste0()` – Combines text strings without additional spaces.
+- `abline()` – Adds a reference line to a graph.
+- `plot()` – Creates a scatter plot of principal component scores.
+- `legend()` – Adds a legend to a graph.
+- `levels()` – Returns the levels of the Iris species factor.
+- `cat()` – Displays formatted output and hypothesis-testing decisions.
+
+#### **Code and Calculation :**
+##### **Principal Component Analysis of Iris Dataset**
+**Loading the Iris Dataset:** The Iris dataset contains measurements of four numerical attributes of three different species of flowers: Sepal Length, Sepal Width, Petal Length and Petal Width.
+```{r}
+# Load the iris dataset
+data(iris)
+
+# Select the four numerical attributes
+iris.data <- iris[, 1:4]
+
+# Display first few observations
+head(iris.data)
+
+# Display dataset dimensions
+dim(iris.data)
+
+# Display structure
+str(iris.data)
+```
+
+##### **Preparing the Data**
+Center the data by subtracting the mean of each variable. PCA is performed using the covariance matrix because the question asks for sample principal components and their sample variances.
+```{r}
+# Calculate column means
+data.mean <- colMeans(iris.data)
+
+# Center the data
+iris.centered <- scale(iris.data,
+                       center = TRUE,
+                       scale = FALSE)
+
+# Display centered data
+head(iris.centered)
+
+# Calculate sample covariance matrix
+S <- cov(iris.data)
+
+# Display covariance matrix
+print(S)
+```
+
+##### **(a). Calculate Principal Components and Their Variances Using the Iterative Method**
+The Power Iteration method is used to calculate the eigenvalues and eigenvectors of the sample covariance matrix. The eigenvectors represent the principal component directions, while the eigenvalues represent their sample variances.
+
+**Create a Function for Power Iteration:**
+```{r}
+# Function to calculate eigenvalues and eigenvectors
+power.iteration <- function(A, tol = 1e-10,
+                            max.iter = 10000) {
+
+  n <- nrow(A)
+
+  # Initialize a random vector
+  v <- rep(1 / sqrt(n), n)
+
+  for (i in 1:max.iter) {
+
+    # Matrix multiplication
+    v.new <- as.vector(A %*% v)
+
+    # Normalize the vector
+    v.new <- v.new / sqrt(sum(v.new^2))
+
+    # Check convergence
+    if (min(sqrt(sum((v.new - v)^2)),
+            sqrt(sum((v.new + v)^2))) < tol) {
+      break
+    }
+
+    v <- v.new
+  }
+
+  # Calculate eigenvalue
+  lambda <- as.numeric(t(v.new) %*% A %*% v.new)
+
+  return(list(
+    eigenvalue = lambda,
+    eigenvector = v.new,
+    iterations = i
+  ))
+}
+```
+
+**Calculate the First Principal Component:**
+```{r}
+# Apply power iteration to covariance matrix
+pc1 <- power.iteration(S)
+
+# First principal component eigenvalue
+lambda1 <- pc1$eigenvalue
+
+# First principal component eigenvector
+v1 <- pc1$eigenvector
+
+# Display results
+cat("First Principal Component Variance:", lambda1, "\n")
+cat("First Principal Component Eigenvector:\n")
+print(v1)
+```
+
+**Calculate the Second Principal Component Using Deflation:**
+
+Deflation is used to remove the contribution of the first principal component from the covariance matrix before calculating the second principal component.
+```{r}
+# Deflate the covariance matrix
+S.deflated <- S - lambda1 * tcrossprod(v1)
+
+# Calculate second principal component
+pc2 <- power.iteration(S.deflated)
+
+# Second principal component eigenvalue
+lambda2 <- pc2$eigenvalue
+
+# Second principal component eigenvector
+v2 <- pc2$eigenvector
+
+# Display results
+cat("Second Principal Component Variance:", lambda2, "\n")
+cat("Second Principal Component Eigenvector:\n")
+print(v2)
+```
+
+**Display the First Two Principal Components:**
+```{r}
+# Combine the first two eigenvectors
+principal.components <- cbind(v1, v2)
+
+# Assign column names
+colnames(principal.components) <- c("PC1", "PC2")
+
+# Display principal components
+print(principal.components)
+
+# Display sample variances
+sample.variances <- c(lambda1, lambda2)
+
+names(sample.variances) <- c("PC1", "PC2")
+
+print(sample.variances)
+```
+
+**Calculate Principal Component Scores:**
+```{r}
+# Calculate scores for the first two components
+pc.scores <- iris.centered %*% principal.components
+
+# Display first few scores
+head(pc.scores)
+```
+
+##### **(b). Calculate the Percentage of Total Variation Explained by the First Two Principal Components**
+The proportion of variance explained by each principal component is calculated by dividing its eigenvalue by the sum of all eigenvalues.
+```{r}
+# Calculate all eigenvalues using the iterative method
+# Repeated deflation is used to obtain all four eigenvalues
+
+A <- S
+all.eigenvalues <- numeric(4)
+
+for (j in 1:4) {
+
+  result <- power.iteration(A)
+
+  all.eigenvalues[j] <- result$eigenvalue
+
+  # Deflate the matrix
+  A <- A - result$eigenvalue *
+    tcrossprod(result$eigenvector)
+}
+
+# Display eigenvalues
+print(all.eigenvalues)
+
+# Calculate proportion of variance
+variance.proportion <- all.eigenvalues / sum(all.eigenvalues)
+
+# Calculate percentage of variance
+variance.percentage <- variance.proportion * 100
+
+# Display variance explained
+print(variance.percentage)
+
+# Calculate cumulative variance
+cumulative.variance <- cumsum(variance.percentage)
+
+print(cumulative.variance)
+```
+
+**Visualize the Percentage of Variance Explained:**
+```{r}
+# Plot percentage of variance explained
+barplot(variance.percentage,
+        names.arg = paste0("PC", 1:4),
+        main = "Percentage of Variance Explained",
+        xlab = "Principal Components",
+        ylab = "Percentage of Variance",
+        col = "skyblue")
+
+# Add 95% reference line
+abline(h = 95, col = "red", lty = 2)
+```
+
+##### **(c). Test Whether the First Two Population Principal Components Explain More Than 95% of Total Variation**
+A bootstrap method is used to test whether the first two population principal components explain more than 95% of the total variation.
+
+**Hypotheses:**
+
+- Null Hypothesis (H0): The first two population principal components explain 95% or less of the total variation.
+- Alternative Hypothesis (H1): The first two population principal components explain more than 95% of the total variation.
+
+```{r}
+# Set seed for reproducibility
+set.seed(123)
+
+# Number of bootstrap samples
+B <- 2000
+
+# Number of observations
+n <- nrow(iris.data)
+
+# Store bootstrap proportions
+bootstrap.values <- numeric(B)
+
+# Bootstrap resampling
+for (b in 1:B) {
+
+  # Select observations with replacement
+  sample.data <- iris.data[
+    sample(1:n, size = n, replace = TRUE),
+  ]
+
+  # Calculate covariance matrix
+  S.boot <- cov(sample.data)
+
+  # Calculate eigenvalues
+  eigen.boot <- eigen(S.boot,
+                      symmetric = TRUE,
+                      only.values = TRUE)$values
+
+  # Calculate proportion explained by first two PCs
+  bootstrap.values[b] <-
+    sum(eigen.boot[1:2]) / sum(eigen.boot)
+}
+
+# Calculate 95% one-sided lower confidence bound
+lower.bound <- quantile(bootstrap.values, 0.05)
+
+# Display results
+cat("Sample proportion explained by first two PCs:",
+    sum(variance.proportion[1:2]), "\n")
+
+cat("95% Bootstrap lower confidence bound:",
+    lower.bound, "\n")
+```
+
+**Decision and Conclusion of Hypothesis Test:**
+```{r}
+# Significance level
+alpha <- 0.05
+
+# Test decision
+if (lower.bound > 0.95) {
+
+  cat("Reject the Null Hypothesis.\n")
+  cat("The first two population principal components",
+      "explain more than 95% of total variation.")
+
+} else {
+
+  cat("Fail to Reject the Null Hypothesis.\n")
+  cat("There is insufficient evidence to conclude that",
+      "the first two population principal components",
+      "explain more than 95% of total variation.")
+}
+```
+
+##### **(d). Plot the First Two Principal Components**
+The first two principal components are plotted to visualize the distribution of the Iris observations in two dimensions.
+```{r}
+# Plot the first two principal component scores
+plot(pc.scores[, 1], pc.scores[, 2],
+     col = as.numeric(iris$Species),
+     pch = 19,
+     main = "PCA of Iris Dataset",
+     xlab = "First Principal Component (PC1)",
+     ylab = "Second Principal Component (PC2)")
+
+# Add legend
+legend("topright",
+       legend = levels(iris$Species),
+       col = 1:3,
+       pch = 19)
+```
+
+#### **Results :**
+1. The Iris dataset contains **150 observations and 4 variables**: Sepal Length, Sepal Width, Petal Length, and Petal Width.
+
+2. Using the iterative method, the first two sample principal components and their corresponding eigenvectors were obtained.
+
+   - **First Principal Component (PC1):**
+     - Sample variance = **4.2282417**
+     - Eigenvector = (0.36138659, -0.08452251, 0.85667061, 0.35828920)
+
+   - **Second Principal Component (PC2):**
+     - Sample variance = **0.2426707**
+     - Eigenvector = (0.65658877, 0.73016143, -0.17337266, -0.07548102)
+
+3. The percentage of total variation explained by the principal components is:
+
+   - PC1 = **92.4618723%**
+   - PC2 = **5.3066483%**
+
+   Therefore, the cumulative percentage of total variation explained by the first two principal components is **97.76852%**.
+
+4. To test whether the first two population principal components explain more than 95% of the total variation, a bootstrap method was used.
+
+   - Sample proportion explained = **0.9776852**
+   - 95% Bootstrap lower confidence bound = **0.9733827**
+
+5. Since the 95% bootstrap lower confidence bound (0.9733827) is greater than 0.95, we **reject the null hypothesis**.
+
+   Hence, there is sufficient evidence to conclude that the first two population principal components explain more than 95% of the total variation.
+
+6. The PCA scatter plot shows that the three Iris species are reasonably well separated, particularly along the first principal component (PC1).
+
+#### **Conclusions :**
+The first two principal components explain approximately **97.77% of the total variation** in the Iris dataset. The bootstrap test confirms that they explain more than 95% of the population variation. Thus, the original four variables can be effectively represented using only the first two principal components, with very little information loss.
+
+
+

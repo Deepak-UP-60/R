@@ -1,0 +1,153 @@
+---
+title: "Practical 1"
+author: "Deepak Kumar Bharti"
+output: html_document
+date: "25056765013"
+---
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#### **Aim :**
+To perform vector creation, manipulation, data type checking, mathematical operations, and indexing.
+
+#### **Theory :**
+A vector is the basic data structure in R that stores elements of the same data type, such as numeric, character, or logical values. Vectors are created using the c() function.<br>
+
+###### **Functions Used**
+- **`c()`** – Combines values to create a vector.
+- **`c()`** – Combines values to create a vector.
+- **`length()`** – Returns the number of elements in a vector.
+- **`round(x, digits)`** – Rounds numeric values to the specified number of decimal places.
+- **`is.numeric()`** – Checks whether an object is of numeric type.
+- **`is.character()`** – Checks whether an object is a character type.
+- **`is.integer()`** – Checks whether an object is an integer type.
+- **`sqrt()`** – Calculates the square root of each element.
+- **`log()`** – Computes the natural logarithm (base *e*) of each element.
+- **`cbind()`** – Combines vectors or objects column-wise into a matrix.
+- **`as.character()`** – Converts an object to character type.
+- **`as.integer()`** – Converts an object to integer type.
+- **`names()`** – Assigns or retrieves names of vector elements.
+- **`paste0()`** – Concatenates strings without any separator.
+
+#### **Problem :**
+Define a vector of decimal data, whose elements are : 2.345612, 1.256701, 2.19875, 0.123765, 4.132895, 7.312678, 0.123453, 4.103254, 3.198341 and perform the following tasks :
+```{r X}
+# Defining the vector
+x <- c(2.345612, 1.256701, 2.19875, 0.123765, 4.132895, 7.312678, 0.123453, 4.103254, 3.198341)
+x
+```
+**I.** Check the lenght of this vector and also convert its elements to 3 decimal places.
+```{r}
+# Checking the length of vector
+length(x)
+# Converting its elements to 3 decimal places
+round(x,3)
+```
+**II.** Extract the 4^th^ and 6^th^ entry.
+```{r}
+# Extracting the entries 4th and 6th entry
+x[c(4,6)]
+```
+**III.** Extract all entries whose values are greater than equal to 3.
+```{r}
+# Extracting the values which is grater or equal to 3
+x[x >= 3]
+```
+**IV.** Check whether it is a numeric, character, or integer vector ?
+```{r}
+is.numeric(x)
+is.character(x)
+is.integer(x)
+```
+**V.** Calculate the square root and natural log of each entry in a single command.
+```{r}
+cbind(Square_Root = sqrt(x), Natural_Log = log(x))
+```
+**VI.** Convert this vector to character and integer vectors, thereafter perform the checking by using testing functions available in R.
+```{r}
+# Converting to Character vector
+x_char <- as.character(x)
+
+# Checking the type
+is.character(x_char)
+is.numeric(x_char)
+is.integer(x_char)
+
+# Converting to Integer vector
+x_int <- as.integer(x)
+
+# Checking the type
+is.integer(x_int)
+is.numeric(x_int)
+is.character(x_int)
+```
+**VII.** Name the vector elements as X~1~, X~2~, X~3~, ...
+```{r}
+names(x) <- paste0("X", 1:length(x))
+x
+```
+**VIII.** By using the names subsets, extract the vector for the values of X~3~, X~6~, and X~9~.
+```{r}
+x[c("X3", "X6", "X9")]
+```
+
+#### **Results :**
+```{r RESULTS, echo=FALSE}
+cat("The given vector is :",x)
+```
+**I.**
+```{r I, echo=FALSE}
+cat("The length of the vector is :",length(x))
+cat("The elements of the vector after converting its elements to 3 decimal places are :",round(x,3))
+```
+**II.**
+```{r II, echo=FALSE}
+cat("The 4th and 6th entries are :",x[c(4,6)],"respectively.")
+```
+**III.**
+```{r III, echo=FALSE}
+cat("The entries whose values are greater than or equal to 3 are :",x[x >= 3])
+```
+**IV.**
+```{r IV, echo=FALSE}
+cat("The given vector is numeric :",is.numeric(x))
+cat("The given vector is character :",is.character(x))
+cat("The given vector is integer :",is.integer(x))
+```
+**V.**
+```{r ANV, echo=FALSE}
+cat("The square root and natural log of each entry in a single command are :")
+```
+```{r out, echo=FALSE}
+cbind(Square_Root = sqrt(x), Natural_Log = log(x))
+```
+**VI.**
+```{r cVI, echo=FALSE}
+x_char <- as.character(x)
+```
+```{r VI, echo=FALSE}
+cat("The vector after converting to character vector :",x_char)
+cat("And the type of vector :")
+cat("is numeric :",is.numeric(x_char))
+cat("is character :",is.character(x_char))
+cat("is integer :",is.integer(x_char))
+```
+```{r iVII, echo=FALSE}
+x_int <- as.integer(x)
+```
+```{r outVII, echo=FALSE}
+cat("The vector after converting to integer vector :",x_int)
+cat("And the type of vector :")
+cat("is numeric :",is.numeric(x_int))
+cat("is character :",is.character(x_int))
+cat("is integer :",is.integer(x_int))
+```
+**VII.**
+```{r VII, echo=FALSE}
+cat("The vector after naming it's elements is :",x)
+```
+**VIII.**
+```{r VIII, echo=FALSE}
+cat("Using the names subsets, the vector for the values of X3, X6, and X9 are :",x[c("X3", "X6", "X9")])
+```

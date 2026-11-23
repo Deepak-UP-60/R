@@ -1,0 +1,164 @@
+---
+title: "Practical 17"
+author: "Deepak Kumar Bharti"
+date: '25056765013'
+output: html_document
+---
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+To generate random observations from an Exponential Distribution with rate parameter $\lambda$ using the Inverse Transformation Method in R.
+
+#### **Problem :**
+Generate 1000 observations from an Exponential Distribution with rate $\lambda = 2$ using the Inverse Transformation Method
+
+#### **Theory :**
+The **Inverse Transformation Method** is a technique used to generate
+random observations from a specified probability distribution using
+random numbers generated from a **Uniform(0,1)** distribution.
+
+For an Exponential Distribution with rate parameter $\lambda$, the
+probability density function (PDF) is:
+
+$$
+f(x) = \lambda e^{-\lambda x}, \quad x \geq 0
+$$
+
+The cumulative distribution function (CDF) of the exponential
+distribution is:
+
+$$
+F(x) = 1 - e^{-\lambda x}
+$$
+
+Let $U$ be a random variable from a Uniform(0,1) distribution.
+According to the Inverse Transformation Method:
+
+$$
+U = F(X)
+$$
+
+Therefore,
+
+$$
+U = 1 - e^{-\lambda X}
+$$
+
+Rearranging the equation:
+
+$$
+e^{-\lambda X} = 1-U
+$$
+
+Taking the natural logarithm on both sides:
+
+$$
+-\lambda X = \ln(1-U)
+$$
+
+Hence,
+
+$$
+X = -\frac{1}{\lambda}\ln(1-U)
+$$
+
+For this practical, the rate parameter is $\lambda = 2$. Therefore:
+
+$$
+X = -\frac{1}{2}\ln(1-U)
+$$
+
+Thus, by generating 1000 random numbers from a Uniform(0,1)
+distribution and applying the above transformation, we obtain 1000
+observations from an Exponential Distribution with rate $\lambda = 2$.
+
+The theoretical mean of the exponential distribution is:
+
+$$
+E(X) = \frac{1}{\lambda}
+$$
+
+The theoretical variance is:
+
+$$
+Var(X) = \frac{1}{\lambda^2}
+$$
+
+Therefore, the simulated sample mean and variance should be equal to theoretical mean and variance respectively.
+
+##### **Functions Used :**
+- `set.seed()` : Sets the starting point for random number generation so that the same random numbers can be reproduced.
+- `runif()` : Generates random numbers from a Uniform distribution.
+- `log()` : Calculates the natural logarithm of a number.
+- `head()` : Displays the first few observations of a dataset.
+- `summary()` : Provides a summary of the main statistical characteristics of the data.
+- `mean()` : Calculates the arithmetic mean of the observations.
+- `var()` : Calculates the sample variance of the observations.
+- `hist()` : Creates a histogram to display the distribution of the generated data.
+- `curve()` : Plots a mathematical function or curve on a graph.
+- `dexp()` : Calculates the probability density function of the Exponential distribution for a given rate parameter.
+- `add = TRUE` : Adds a new plot or curve to an existing graph instead of creating a new graph.
+
+#### **Code and Calculation :**
+```{r}
+# Set seed for reproducibility
+set.seed(123)
+
+# Number of observations
+n <- 1000
+lambda = 2
+
+# Generate U ~ Uniform(0,1)
+U <- runif(n)
+
+# Inverse Transformation Method
+X <- -log(1 - U) / lambda
+
+# Display first 10 observations
+head(X, 10)
+
+# Summary statistics
+summary(X)
+
+# Sample mean & variance
+Cal_Mean = mean(X)
+cat("The mean of the Generated Sample is :",Cal_Mean)
+Cal_Variance = var(X)
+cat("The variance of the Generated Sample is :",Cal_Variance)
+
+# Theoretical mean & variance
+Th_Mean = 1/lambda
+cat("The theoretical mean is :",Th_Mean)
+Th_Variance = 1/lambda^2
+cat("The theoretical variance is :",Th_Variance)
+
+# Histogram
+hist(X,
+     breaks = 30,
+     probability = TRUE,
+     main = "1000 Exponential Observations (lambda = 2)",
+     xlab = "X")
+
+# Add theoretical exponential density
+curve(dexp(x, rate = 2),
+      add = TRUE,
+      lwd = 2)
+```
+
+#### **Results & Conclusions :**
+Using the Inverse Transformation Method, **1000 observations** were generated from an Exponential Distribution with rate parameter \(\lambda=2\).
+
+- **Mean** of the generated sample : $0.4930772$
+- **Theoretical mean** : $0.5$
+- **Variance** of the generated sample : $0.2387416$
+- **Theoretical variance** : $0.25$
+
+The generated sample mean $(0.4930772)$ is close to the theoretical mean $(0.5)$, and the sample variance $(0.2387416)$ is reasonably close to the theoretical variance $(0.25)$.
+
+The histogram shows that the generated data follows the characteristic **right-skewed shape of an exponential distribution**, and the theoretical density curve closely follows the histogram mean the generated samples closely follows **Exponential Distribution** with rate $\lambda = 2$.
+
+

@@ -1,0 +1,558 @@
+---
+title: "Practical 24"
+author: "Deepak Kumar Bharti"
+date: '2556765013'
+output: html_document
+---
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+To perform cluster analysis on the Wine dataset using K-means and Hierarchical Clustering, determine the optimal number of clusters using the Elbow Method (WCSS), and visualize the clustering results using Principal Component Analysis (PCA) and dendrograms in R.
+
+#### **Problem :**
+##### **Cluster Analysis for Wine Dataset**
+The wine dataset contains data that are the results of a chemical analysis of wines grown in the same region in Italy but derived from three different cultivars. The analysis determined the quantities of 13 constituents found in each of the three types of wines. Read the data in R using the following commands.
+
+```{r, eval=FALSE}
+wine.R = "http://archive.ics.uci.edu/ml/machine-learning-databases/wine/wine.data"
+wine <- read.csv(wine.R, header = FALSE)
+colnames(wine) = c("Type","Alcohol","Malic","Ash","Alcalinity",
+"Magnesium","Phenols","Flavanoids","Nonflavanoid",
+"Proanthocyanins","Color","Hue","Dilution","Proline")
+colnames(wine) = wine.names
+```
+
+  (a) Using an intuitive choice of $K$, run the K-means algorithm to cluster the wines of the different cultivars.
+
+  (b) Create a function in R which returns the within-cluster sum of squares of the K-means algorithm for a given value of $K$. Run your function over this dataset for different choices of $K$ and make a suitable plot of the result. Does the plot suggest any suitable value of $K$? Does this choice match with your intuitive one?
+
+  (c) Plot the cluster solutions visually in two dimensions.
+
+  (d) Perform hierarchical clustering using complete linkage and plot the dendrogram in R. Cut the dendrogram at suitable height to produce appropriate number of clusters.
+
+#### **Theory :**
+##### **Cluster Analysis**
+Cluster Analysis is an unsupervised machine learning technique used to group similar observations into different groups called clusters. The main objective is to place similar objects in the same cluster and dissimilar objects in different clusters.
+
+Unlike supervised learning, clustering does not require predefined output labels. It identifies natural patterns and structures present in the dataset based on similarities and dissimilarities.
+
+In this practical, the Wine dataset is used. It contains the results of chemical analysis of wines grown in the same region of Italy but derived from three different cultivars. The dataset consists of 178 observations and 13 chemical attributes, including Alcohol, Malic Acid, Ash, Magnesium, Phenols, Flavanoids, Color, Hue and Proline.
+
+The main objective is to apply different clustering techniques to group wines according to their chemical characteristics.
+
+##### **Data Preprocessing and Standardization**
+Before applying clustering algorithms, data preprocessing is necessary. The Wine dataset contains numerical attributes measured on different scales. Variables with larger numerical values may dominate distance calculations and affect clustering results.
+
+Therefore, standardization is performed to bring all numerical variables to a comparable scale.
+
+The standardization formula is:
+
+$$
+Z = \frac{X-\mu}{\sigma}
+$$
+
+Where:
+
+- $X$ = Original observation.
+- $\mu$ = Mean of the variable.
+- $\sigma$ = Standard deviation.
+- $Z$ = Standardized value.
+
+After standardization, each variable has approximately zero mean and unit variance.
+
+The `Type` column is excluded from clustering because it represents the actual wine cultivar. It is used only to compare the clustering results with the original categories.
+
+##### **K-means Clustering**
+K-means is a popular unsupervised clustering algorithm used to divide a dataset into a specified number of clusters, represented by $K$.
+
+Each cluster is represented by its centroid, which is the mean of all observations belonging to that cluster.
+
+The main objective of K-means is to minimize the sum of squared distances between observations and their respective cluster centroids.
+
+- ##### **Working of K-Means Algorithm :**
+
+  1. **Select K:** Choose the required number of clusters. In this practical, $K=3$ is selected initially because the dataset contains three wine cultivars.
+  2. **Initialize centroids:** Select $K$ initial cluster centers.
+  3. **Calculate distances:** Calculate the distance of each observation from all cluster centroids using Euclidean distance.
+  4. **Assign clusters:** Assign each observation to its nearest centroid.
+  5. **Update centroids:** Recalculate the centroid of each cluster by taking the mean of its observations.
+  6. **Repeat:** Repeat the assignment and centroid update steps until the cluster assignments become stable or the algorithm converges.
+
+- ##### **Objective Function :**
+  K-means minimizes the Within-Cluster Sum of Squares (WSS).
+$$
+WSS = \sum_{k=1}^{K}\sum_{x_i\in C_k}
+\|x_i-\mu_k\|^2
+$$
+  Where:
+  
+  - $K$ = Number of clusters.
+  - $C_k$ = Observations belonging to cluster $k$.
+  - $x_i$ = Individual data observation.
+  - $\\mu_k$ = Centroid of cluster $k$.
+
+  A smaller WSS indicates that observations are closer to their respective cluster centroids.
+
+  **Application:** K-means clustering is applied to the standardized Wine dataset with an initial choice of $K=3$ to group wine samples according to their chemical properties.
+
+##### **Within-Cluster Sum of Squares (WSS) and Elbow Method**
+Within-Cluster Sum of Squares (WSS) measures the total squared distance between observations and their respective cluster centroids.
+
+It indicates how compact the clusters are. Lower WSS values represent more compact clusters.
+
+However, WSS generally decreases as the number of clusters increases. Therefore, the smallest WSS value alone cannot determine the optimal number of clusters.
+
+- ##### **Elbow Method :**
+  The Elbow Method is a graphical technique used to determine a suitable number of clusters for K-means clustering.
+
+- ##### **Steps Involved :**
+  1. Apply K-means clustering for different values of $K$.
+  2. Calculate WSS for each value of $K$.
+  3. Plot the number of clusters ($K$) on the X-axis and WSS on the Y-axis.
+  4. Identify the point where the reduction in WSS starts becoming less significant.
+  5. Select the $K$ value corresponding approximately to this point.
+
+  This point is known as the **Elbow Point**.
+
+  **Application:** In this practical, a function is created in R to calculate WSS for different values of $K$. The resulting values are plotted to identify a suitable number of clusters and compare it with the initial choice of $K=3$.
+
+##### **Principal Component Analysis (PCA)**
+Principal Component Analysis (PCA) is a dimensionality reduction technique used to transform a dataset containing many variables into a smaller number of new variables called principal components.
+
+These components retain as much of the original data's variation as possible.
+
+- ##### **Important Principal Components :**
+
+  - **First Principal Component (PC1):** Captures the maximum possible variance in the dataset.
+  - **Second Principal Component (PC2):** Captures the maximum remaining variance and is uncorrelated with PC1.
+
+  Each principal component is a linear combination of the original variables.
+
+- ##### **Importance of PCA :**
+
+  1. Reduces the dimensionality of the dataset.
+  2. Helps visualize high-dimensional data in two dimensions.
+  3. Preserves as much information (variance) as possible.
+  4. Helps identify patterns and separation between clusters.
+  5. Makes interpretation of clustering results easier.
+
+  **Application:** The Wine dataset contains 13 chemical attributes. PCA reduces these attributes to two principal components (PC1 and PC2), which are used to plot the cluster solutions visually in two dimensions.
+
+##### **Hierarchical Clustering**
+Hierarchical Clustering is an unsupervised learning technique that creates a hierarchy of clusters based on similarities or distances between observations.
+
+It represents the clustering process using a tree-like diagram called a dendrogram.
+
+Unlike K-means, hierarchical clustering does not require the number of clusters to be specified before constructing the hierarchy.
+
+There are two main approaches:
+
+- ##### **A. Agglomerative Hierarchical Clustering :**
+  It follows a bottom-up approach.
+
+  1. Initially, every observation is treated as an individual cluster.
+  2. The distances between clusters are calculated.
+  3. The two closest clusters are merged.
+  4. The process continues by repeatedly merging the closest clusters.
+  5. Finally, all observations can be combined into one cluster.
+
+- ##### **B. Divisive Hierarchical Clustering :**
+  It follows a top-down approach.
+
+  1. Initially, all observations are considered as one cluster.
+  2. The cluster is divided into smaller clusters.
+  3. The division continues into smaller groups.
+  4. The process stops when the required number of clusters is obtained or another stopping condition is met.
+
+
+##### **Complete Linkage Method**
+Complete Linkage is a method used in hierarchical clustering to measure the distance between two clusters.
+
+It calculates the distance between two clusters using the maximum distance between any pair of observations, with one observation belonging to each cluster.
+
+Its mathematical formula is:
+
+$$
+D(A,B)=\max_{a\in A,b\in B}d(a,b)
+$$
+
+Where:
+
+- $A$ and $B$ represent two different clusters.
+- $a$ and $b$ are observations belonging to the respective clusters.
+- $d(a,b)$ represents the distance between the observations.
+
+In complete linkage, the two clusters having the smallest maximum pairwise distance are merged at each step.
+
+This method generally produces compact clusters because it considers the maximum distance between observations in different clusters.
+
+**Application:** Hierarchical clustering is performed using Euclidean distance and the complete linkage method in R.
+
+##### **Dendrogram**
+A Dendrogram is a tree-like graphical representation of hierarchical clustering. It illustrates how individual observations or clusters are progressively combined during the clustering process.
+
+- ##### **Main Features of a Dendrogram :**
+  
+  1. Each leaf represents an individual observation.
+  2. Branches represent the merging of observations or clusters.
+  3. The vertical height represents the distance at which two clusters are merged.
+  4. Clusters joined at smaller heights are generally more similar.
+  5. A horizontal cut across the dendrogram determines the number of clusters.
+
+- ##### **Cutting the Dendrogram :**
+  After constructing the dendrogram, it can be cut at a suitable height to obtain the required number of clusters.
+
+  In this practical, the dendrogram is cut to obtain three clusters using the `cutree()` function in R.
+
+##### **Functions Used :**
+The following R functions are used to perform cluster analysis on the Wine dataset:
+
+- `read.csv()` – Reads the wine dataset from a CSV file.
+- `colnames()` – Assigns column names to the dataset.
+- `head()` – Displays the first few observations.
+- `dim()` – Returns the number of rows and columns.
+- `str()` – Displays the structure of the dataset.
+- `scale()` – Standardizes the numerical data.
+- `kmeans()` – Performs K-means clustering.
+- `print()` – Displays the results.
+- `table()` – Creates a frequency table to compare actual wine types and clusters.
+- `plot()` – Creates graphical representations of clustering results.
+- `legend()` – Adds a legend to a plot.
+- `sapply()` – Applies a function over different values of K.
+- `function()` – Defines a user-created function to calculate WSS.
+- `prcomp()` – Performs Principal Component Analysis (PCA).
+- `summary()` – Displays a summary of PCA results.
+- `sum()` – Calculates the total variance explained by the first two principal components.
+- `dist()` – Calculates Euclidean distances between observations.
+- `hclust()` – Performs hierarchical clustering.
+- `rect.hclust()` – Draws rectangles around clusters in a dendrogram.
+- `cutree()` – Divides the hierarchical tree into a specified number of clusters.
+
+#### **Code and Calculation :**
+
+##### **Cluster Analysis of Wine Dataset**
+**Loading the Wine Dataset:** The wine dataset contains chemical measurements of wines belonging to three different cultivars.
+```{r}
+# Load the wine dataset
+wine.R <- "https://archive.ics.uci.edu/ml/machine-learning-databases/wine/wine.data"
+
+wine <- read.csv(wine.R, header = FALSE)
+
+# Assign column names
+colnames(wine) <- c(
+  "Type", "Alcohol", "Malic", "Ash", "Alcalinity",
+  "Magnesium", "Phenols", "Flavanoids", "Nonflavanoid",
+  "Proanthocyanins", "Color", "Hue", "Dilution", "Proline"
+)
+
+# Display first few observations
+head(wine)
+```
+
+**Data Preprocessing:** Remove the Type column and standardize the numerical attributes before applying clustering.
+```{r}
+# Select numerical attributes
+wine.data <- wine[, -1]
+
+# Standardize the data
+wine.scaled <- scale(wine.data)
+
+# Check the dimensions
+dim(wine.scaled)
+```
+
+##### **(a). Perform K-means Clustering Using an Intuitive Choice of K**
+Since the Wine dataset contains three cultivars, we initially select K = 3.
+```{r}
+# Set seed for reproducibility
+set.seed(123)
+
+# Apply K-means clustering
+km <- kmeans(wine.scaled, centers = 3, nstart = 25)
+
+# Display clustering results
+print(km)
+
+# Display cluster sizes
+km$size
+
+# Display cluster centers
+km$centers
+
+# Compare actual wine types with clusters
+table(Actual_Type = wine$Type, Cluster = km$cluster)
+```
+
+**Visualize the K-means clusters:**
+```{r}
+# Plot the clusters using first two attributes
+plot(wine.scaled[, 1], wine.scaled[, 2],
+     col = km$cluster,
+     pch = 19,
+     main = "K-means Clustering of Wine Dataset",
+     xlab = "Alcohol",
+     ylab = "Malic Acid")
+
+# Add legend
+legend("topright",
+       legend = paste("Cluster", 1:3),
+       col = 1:3,
+       pch = 19)
+```
+
+##### **(b). Determine the Optimal Number of Clusters Using WCSS**
+Create a function that calculates the within-cluster sum of squares for a given value of K.
+```{r}
+# Function to calculate WCSS
+calculate.wss <- function(data, K) {
+
+  set.seed(123)
+
+  model <- kmeans(data,
+                  centers = K,
+                  nstart = 25)
+
+  return(model$tot.withinss)
+}
+```
+
+**Calculate WCSS for different values of K:**
+```{r}
+# Select values of K from 1 to 10
+K.values <- 1:10
+
+# Calculate WCSS for each K
+wss.values <- sapply(K.values, function(k) {
+  calculate.wss(wine.scaled, k)
+})
+
+# Display WCSS values
+print(wss.values)
+```
+
+**Plot the Elbow Graph:**
+```{r}
+plot(K.values, wss.values,
+     type = "b",
+     pch = 19,
+     col = "blue",
+     main = "Elbow Method",
+     xlab = "Number of Clusters (K)",
+     ylab = "Within-Cluster Sum of Squares")
+```
+
+##### **(c). Plot the Cluster Solutions Visually in Two Dimensions**
+Since the dataset contains 13 numerical attributes, Principal Component Analysis (PCA) is used to reduce the dimensions to two principal components.
+```{r}
+# Perform PCA
+pca <- prcomp(wine.scaled,
+              center = FALSE,
+              scale. = FALSE)
+
+# Extract first two principal components
+pca.data <- pca$x[, 1:2]
+
+# Plot K-means clusters using PCA
+plot(pca.data[, 1], pca.data[, 2],
+     col = km$cluster,
+     pch = 19,
+     main = "K-means Clusters using PCA",
+     xlab = "First Principal Component (PC1)",
+     ylab = "Second Principal Component (PC2)")
+
+# Add legend
+legend("topright",
+       legend = paste("Cluster", 1:3),
+       col = 1:3,
+       pch = 19)
+
+# Display PCA summary
+summary(pca)
+```
+
+##### **(d). Perform Hierarchical Clustering Using Complete Linkage**
+Hierarchical clustering is performed using Euclidean distance and the complete linkage method.
+```{r}
+# Calculate Euclidean distance
+d <- dist(wine.scaled, method = "euclidean")
+
+# Perform hierarchical clustering using complete linkage
+hc <- hclust(d, method = "complete")
+
+# Display hierarchical clustering results
+print(hc)
+```
+
+**Plot the Dendrogram:**
+```{r}
+# Plot dendrogram
+plot(hc,
+     main = "Hierarchical Clustering - Complete Linkage",
+     xlab = "Wine Observations",
+     ylab = "Height",
+     sub = "",
+     cex = 0.5)
+
+# Draw rectangles around three clusters
+rect.hclust(hc, k = 3, border = 2:4)
+```
+
+**Cut the Dendrogram into Three Clusters:**
+```{r}
+# Divide dendrogram into three clusters
+groups <- cutree(hc, k = 3)
+
+# Display cluster membership
+print(groups)
+
+# Display cluster sizes
+table(groups)
+
+# Compare actual wine types with hierarchical clusters
+table(Actual_Type = wine$Type,
+      Hierarchical_Cluster = groups)
+```
+
+**Visualize Hierarchical Clusters Using PCA:**
+```{r}
+# Plot hierarchical clusters
+plot(pca.data[, 1], pca.data[, 2],
+     col = groups,
+     pch = 19,
+     main = "Hierarchical Clustering using PCA",
+     xlab = "First Principal Component (PC1)",
+     ylab = "Second Principal Component (PC2)")
+
+# Add legend
+legend("topright",
+       legend = paste("Cluster", 1:3),
+       col = 1:3,
+       pch = 19)
+```
+
+#### **Results :**
+##### **(a). K-means Clustering Using K = 3**
+
+K-means clustering was performed on the standardized Wine dataset by selecting K = 3, since the dataset contains three different wine cultivars.
+
+**Results Obtained:**
+
+- Total observations: 178
+- Number of clusters: 3
+- Cluster sizes: Cluster 1 = 51, Cluster 2 = 62, Cluster 3 = 65.
+- Total Within-Cluster Sum of Squares (WCSS): 1270.7491.
+- Between-cluster variation: 44.8%.
+
+**Comparison of Actual Wine Types with Clusters:**
+
+| Actual Type | Cluster 1 | Cluster 2 | Cluster 3 |
+|---|---:|---:|---:|
+| Type 1 | 0 | 59 | 0 |
+| Type 2 | 3 | 3 | 65 |
+| Type 3 | 48 | 0 | 0 |
+
+**Interpretation:** The clusters mainly represent Type 3, Type 1 and Type 2 wines, respectively. The scatter plot of Alcohol and Malic Acid shows the distribution of the three clusters.
+
+##### **(b). Optimal Number of Clusters Using WCSS**
+
+A user-defined function was created to calculate WCSS for different values of K, ranging from 1 to 10.
+
+**WCSS Values Obtained:**
+
+| K | WCSS |
+|---:|---:|
+| 1 | 2301.0000 |
+| 2 | 1649.4400 |
+| 3 | 1270.7491 |
+| 4 | 1168.6143 |
+| 5 | 1095.1529 |
+| 6 | 1036.2483 |
+| 7 | 974.3994 |
+| 8 | 918.9544 |
+| 9 | 875.8302 |
+| 10 | 834.8803 |
+
+**Interpretation:**
+
+- WCSS decreases as K increases.
+- A significant decrease is observed from K = 1 to K = 3.
+- After K = 3, the decrease becomes comparatively smaller.
+- The Elbow graph indicates a bending point around K = 3.
+
+Therefore, **K = 3 is a suitable choice**, which matches the initial intuitive selection.
+
+##### **(c). Visualizing Clusters Using PCA**
+
+Principal Component Analysis (PCA) was applied to reduce the 13 numerical attributes into two principal components.
+
+**Variance Explained:**
+
+| Component | Variance |
+|---|---:|
+| PC1 | 36.2% |
+| PC2 | 19.2% |
+| **Total** | **55.4%** |
+
+**Interpretation:**
+
+- PC1 explains 36.2% of the total variation.
+- PC2 explains 19.2% of the total variation.
+- Together, they explain 55.4% of the total variation.
+- The PCA scatter plot shows three distinguishable groups of wine observations.
+
+Thus, PCA helps visualize the K-means clusters in two dimensions.
+
+##### **(d). Hierarchical Clustering Using Complete Linkage**
+
+Hierarchical clustering was performed using Euclidean distance and the complete linkage method. The dendrogram was cut into three clusters.
+
+**Cluster Sizes Obtained:**
+
+| Cluster | Observations |
+|---|---:|
+| Cluster 1 | 69 |
+| Cluster 2 | 58 |
+| Cluster 3 | 51 |
+| **Total** | **178** |
+
+**Comparison of Actual Wine Types with Hierarchical Clusters:**
+
+| Actual Type | Cluster 1 | Cluster 2 | Cluster 3 |
+|---|---:|---:|---:|
+| Type 1 | 51 | 8 | 0 |
+| Type 2 | 18 | 50 | 3 |
+| Type 3 | 0 | 0 | 48 |
+
+**Interpretation:**
+
+- Cluster 1 mainly contains Type 1 wines.
+- Cluster 2 mainly contains Type 2 wines.
+- Cluster 3 mainly contains Type 3 wines.
+- The dendrogram represents the merging of observations into hierarchical groups.
+- Cutting the dendrogram produces three clusters.
+
+The PCA plot also visualizes the hierarchical clusters in two dimensions.
+
+##### **Overall Results**
+
+| Part | Technique | Result |
+|---|---|---|
+| (a) | K-means | 3 clusters: 51, 62, 65 |
+| (b) | Elbow Method | Suitable K = 3 |
+| (c) | PCA | 55.4% variance explained |
+| (d) | Hierarchical Clustering | 3 clusters: 69, 58, 51 |
+
+#### **Conclusions :**
+The Wine dataset was successfully analyzed using K-means and hierarchical clustering techniques. K-means clustering divided the 178 wine observations into three clusters with sizes 51, 62 and 65. The Elbow Method suggested that K = 3 is a suitable number of clusters, which matches the initial intuitive choice.
+
+PCA reduced the 13 chemical attributes into two principal components, explaining 55.4% of the total variation, and helped visualize the clusters in two dimensions.
+
+Finally, hierarchical clustering using complete linkage produced three clusters with sizes 69, 58 and 51. The dendrogram represented the hierarchical relationships among the wine observations.
+
+**Therefore, both K-means and hierarchical clustering successfully identified three major groups of wines based on their chemical properties.**
+
+

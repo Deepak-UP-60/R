@@ -1,0 +1,284 @@
+---
+title: "Practical 22"
+author: "Sudhanshu Ranjan"
+date: '25056765011'
+output: html_document
+---
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+To estimate the missing plot value in RBD using the missing-plot technique and perform the analysis of RBD using ANOVA.
+
+#### **Problem :**
+Using the given data, the observation under the second treatment in the third block is missing.
+
+Calculate the bias involved in the analysis.
+
+| Treatments / Blocks | 1 | 2 | 3 | 4 | 5 |
+|:-------------:|:---:|:---:|:---:|:---:|:---:|
+| I             | 116 | 118 | 97  | 101 | 115 |
+| II            | 171 | 131 | NA  | 107 | 129 |
+| III           | 138 | 131 | 115 | 93  | 110 |
+| IV            | 144 | 141 | 115 | 93  | 99  |
+
+Also, analyse the Randomized Block Design (RBD) with one missing observation using the missing-plot technique.
+
+#### **Theory :**
+
+##### **Randomized Block Design (RBD)**
+Randomized Block Design (RBD) is an experimental design used to compare
+different treatments while controlling the variation among experimental
+units. In this design, experimental units are divided into homogeneous
+groups called blocks, and each treatment is randomly assigned once
+within every block.
+
+RBD helps reduce experimental error by grouping similar experimental
+units together. It is commonly used in agricultural and statistical
+experiments.
+
+##### **Missing Observation in RBD **
+Sometimes, an observation may be missing due to accidental damage,
+recording errors, or other experimental problems. Such missing
+observations affect the analysis of variance (ANOVA).
+
+To overcome this problem, the missing observation is estimated using
+the **Missing Plot Technique**.
+
+For one missing observation in RBD, the estimated value is calculated
+using the following formula:
+
+$$
+x = \frac{tB+rT-G}{(t-1)(r-1)}
+$$
+
+Where :
+
+- `x` = Estimated missing observation.
+- `t` = Number of treatments.
+- `r` = Number of blocks.
+- `B` = Total of the block containing the missing observation,
+  excluding the missing value.
+- `T` = Total of the treatment containing the missing observation,
+  excluding the missing value.
+- `G` = Grand total of all available observations.
+
+- ##### **Analysis of Variance (ANOVA) :**
+  After estimating the missing observation, it is replaced in the original data, and ANOVA is performed to determine whether significant differences exist among treatments and blocks.
+  
+  The total variation in the experimental data is divided into three
+  
+  components :
+  
+  1. **Treatment Variation:** Variation due to differences among treatments.
+  2. **Block Variation:** Variation due to differences among blocks.
+  3. **Error Variation:** Variation due to unexplained experimental factors.
+  
+  The following formulas are used:
+
+  - **Correction Factor (CF):**
+$$
+CF = \frac{G^2}{N}
+$$
+
+  - **Total Sum of Squares:**
+$$
+SS_T = \\sum x_{ij}^2 - CF
+$$
+
+  - **Treatment Sum of Squares:**
+$$
+SS_{Tr} = \frac{\sum T_i^2}{r} - CF
+$$
+
+  - **Block Sum of Squares:**
+$$
+SS_B = \frac{\sum B_j^2}{t} - CF
+$$
+
+  - **Error Sum of Squares:**
+$$
+SS_E = SS_T - SS_{Tr} - SS_B
+$$
+
+- ##### **Degrees of Freedom :**
+  When one observation is missing and estimated, one degree of freedom is lost in the analysis.
+  
+  | Source of Variation | Degrees of Freedom |
+  |:-------------------:|:------------------:|
+  | Treatments | $t-1$ |
+  | Blocks | $r-1$ |
+  | Error | $(t-1)(r-1)-1$ |
+  | Total | $tr-2$ |
+
+- ##### **Mean Sum of Squares and F-Test :**
+  Mean sum of squares is calculated by dividing the sum of squares by the corresponding degrees of freedom.
+$$
+MS = \frac{SS}{df}
+$$
+
+  The F-test is used to test the significance of treatment and block effects.
+
+  - **F-value for Treatments:**
+$$
+F_{Tr} = \frac{MS_{Tr}}{MS_E}
+$$
+
+  - **F-value for Blocks:**
+$$
+F_B = \frac{MS_B}{MS_E}
+$$
+
+  The calculated F-values are compared with the corresponding tabulated F-values at a specified level of significance.
+  
+  - If calculated F-value is greater than tabulated F-value, the effect is significant.
+  - If calculated F-value is less than or equal to tabulated F-value, the effect is not significant.
+
+- ##### **Bias and Loss of Information :**
+  The estimation of a missing observation introduces uncertainty because the estimated value is not an actual experimental observation.
+  
+  - One degree of freedom is lost due to estimation of the missing value.
+  - The error degrees of freedom are reduced by one.
+  - The precision of the experiment may decrease.
+  - The missing-plot technique assumes an additive model without treatment and block interaction.
+  
+  Under the additive model, the missing-value estimate is the least-squares estimate. If treatment and block interaction exists, the estimate may not adequately represent the missing observation.
+
+##### **Functions Used :**
+The following R functions are used in this practical:
+
+- `matrix()` : Creates a matrix to store experimental data.
+- `rownames()` : Assigns names to treatment rows.
+- `colnames()` : Assigns names to block columns.
+- `print()` : Displays the data and results.
+- `rowSums()` : Calculates treatment totals.
+- `colSums()` : Calculates block totals.
+- `sum()` : Calculates the grand total of observations.
+- `na.rm = TRUE` : Removes missing values while calculating totals.
+- `cat()` : Displays output and calculated values.
+- `data.frame()` : Creates the ANOVA table.
+- `pf()` : Calculates p-values using the F-distribution.
+- `if-else` : Checks the significance of treatments and blocks.
+
+#### **Code and Calculation :**
+```{r}
+# Randomized Block Design with one missing observation
+
+# Entering the data
+data <- matrix(c(
+  116, 118, 97, 101, 115,
+  171, 131, NA, 107, 129,
+  138, 131, 115, 93, 110,
+  144, 141, 115, 93, 99
+), nrow = 4, byrow = TRUE)
+
+rownames(data) <- c("I", "II", "III", "IV")
+colnames(data) <- paste("Block", 1:5)
+
+print("Original data:")
+print(data)
+
+# Number of treatments and blocks
+t <- 4
+r <- 5
+
+# Calculating totals excluding missing observation
+T <- rowSums(data, na.rm = TRUE)
+B <- colSums(data, na.rm = TRUE)
+G <- sum(data, na.rm = TRUE)
+
+# Identifying missing treatment and block
+i <- 2
+j <- 3
+
+# Estimating missing observation
+x <- (t * B[j] + r * T[i] - G) /
+     ((t - 1) * (r - 1))
+
+cat("Estimated missing value =", x)
+
+# Replace missing value
+data[i, j] <- x
+
+print("Completed data:")
+print(data)
+
+# Calculate totals
+treatment_total <- rowSums(data)
+block_total <- colSums(data)
+grand_total <- sum(data)
+
+# Correction factor
+N <- t * r
+CF <- grand_total^2 / N
+
+# Sum of squares
+SST <- sum(data^2) - CF
+
+SStr <- sum(treatment_total^2) / r - CF
+
+SSb <- sum(block_total^2) / t - CF
+
+SSe <- SST - SStr - SSb
+
+# Degrees of freedom
+df_tr <- t - 1
+df_b <- r - 1
+df_e <- (t - 1) * (r - 1) - 1
+df_total <- N - 2
+
+# Mean squares
+MStr <- SStr / df_tr
+MSb <- SSb / df_b
+MSe <- SSe / df_e
+
+# F statistics
+Ftr <- MStr / MSe
+Fb <- MSb / MSe
+
+# P-values
+p_tr <- pf(Ftr, df_tr, df_e, lower.tail = FALSE)
+p_b <- pf(Fb, df_b, df_e, lower.tail = FALSE)
+
+# ANOVA table
+ANOVA <- data.frame(
+  Source = c("Treatments", "Blocks", "Error", "Total"),
+  DF = c(df_tr, df_b, df_e, df_total),
+  SS = c(SStr, SSb, SSe, SST),
+  MS = c(MStr, MSb, MSe, NA),
+  F_value = c(Ftr, Fb, NA, NA),
+  P_value = c(p_tr, p_b, NA, NA)
+)
+
+print("ANOVA TABLE:")
+print(ANOVA, digits = 6)
+
+# Final conclusions
+if (p_tr < 0.05) {
+  cat("Treatments are significant at 5% level\n")
+} else {
+  cat("Treatments are not significant at 5% level\n")
+}
+
+if (p_b < 0.05) {
+  cat("Blocks are significant at 5% level\n")
+} else {
+  cat("Blocks are not significant at 5% level\n")
+}
+```
+
+#### **Results :**
+The following results were obtained from the analysis of Randomized Block Design (RBD) with one missing observation using the missing-plot technique in R software.
+
+- The estimated missing observation under Treatment II in Block 3 was found to be **144.5**.
+- The missing value was successfully replaced, and the completed data matrix was obtained.
+- The calculated F-value for treatments was **4.49875**, with a p-value of **0.02716**.
+- The calculated F-value for blocks was **7.63046**, with a p-value of **0.00339**.
+- Since the p-values for both treatments and blocks are less than 0.05, both treatment and block effects are statistically significant at the 5% level.
+- One degree of freedom was deducted due to the estimation of the missing observation.
+
+#### **Conclusions :**
+The missing observation was estimated as 144.5 using the missing-plot technique. The ANOVA results indicate that there are significant differences among treatments as well as among blocks at the 5% level of significance. Thus, the practical successfully demonstrates the estimation of a missing observation and the analysis of RBD using R software.

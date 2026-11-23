@@ -1,0 +1,68 @@
+---
+title: "Practical 4"
+author: "Deepak Kumar Bharti"
+date: '25056765013'
+output: html_document
+---
+
+------------------------------------------------------------------------
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+
+To define a vector of complex numbers in **R** and perform basic operations such as finding the real and imaginary parts, modulus, conjugate, type, and class of the vector.
+
+#### **Theory :**
+
+A **complex number** in R is represented in the form `a + bi`, where `a` is the real part and `b` is the imaginary part.
+
+R provides functions such as `Re()` and `Im()` to extract the real and imaginary parts. The `Mod()` function is used to find the modulus, while `Conj()` gives the complex conjugate.
+
+The `typeof()` and `class()` functions are used to identify the type and class of the vector, and `str()` provides the complete structure of the vector.
+
+#### **Problem :**
+
+Define a vector of the complex numbers, whose elements are $1+2i$, $4-1i$, $2+1i$, $2-2i$, $5-1i$, $3+6i$ and perform the following tasks :
+
+```{r}
+# Definig the given vector
+z <- c(1+2i, 4-1i, 2+1i, 2-2i, 5-1i, 3+6i)
+cat("The given vector is :",z)
+```
+
+**I.** Extract the real and imaginary part of the above vector.
+
+```{r}
+# Extracting real and imaginary parts
+real_part <- Re(z)
+imaginary_part <- Im(z)
+cat("The real part of complex vector are :",real_part)
+cat("The imaginary part of complex vector are :",imaginary_part)
+```
+
+**II.** Calculate the modulus and complex conjugate of the above vector.
+
+```{r}
+# Calculating modulus and complex conjugate
+modulus <- Mod(z)
+conjugate <- Conj(z)
+cat("The modulus of the given vector is :",modulus)
+cat("The complex conjugate of the given vector is :",conjugate)
+```
+
+**III.** Check the type and class of this vector, also use str() function to get the full detail of this vector.
+
+```{r}
+# cheking its types and class
+cat("The type of the vector is :",typeof(z))
+cat("The class of the vector is :",class(z))
+cat("Full structure using str() :")
+str(z)
+```
+
+#### **Result :**
+
+The complex number vector was successfully created in **R**. The real and imaginary parts, modulus, and complex conjugates were successfully obtained. The type and class of the vector were identified as **complex**, and the `str()` function was used to display its complete structure.

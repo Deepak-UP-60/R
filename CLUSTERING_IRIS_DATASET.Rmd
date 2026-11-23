@@ -1,0 +1,772 @@
+---
+title: "Practical 25"
+author: "Deepak Kumar Bharti"
+date: '25056765013'
+output: html_document
+---
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+To perform and compare AGNES, DIANA, K-means, PAM and FANNY clustering techniques on the Iris dataset using \(K=3\), and evaluate the clustering solutions using dendrograms and silhouette analysis in R.
+
+#### **Problem :**
+##### **Cluster Analysis**
+Load the iris dataset again in R. But now we shall work with a subset of the data for better visualization of the graphs. Run the following piece of R code to prepare the data.
+```{r, eval=FALSE}
+data <- as.matrix(iris[, -5])[6 * (1:25), ]
+rownames(data) <- iris$Species[6 * (1:25)]
+```
+
+(a) The function $agnes$ in the package $cluster$ also performs hierarchical agglomerative clustering. Use this function to perform hierarchical clustering using **average linkage** and plot the **dendrogram**.
+(b) The function $diana$ in the package $cluster$ performs hierarchical divisive clustering. Use this function to perform hierarchical clustering using average linkage and plot the dendrogram.
+(c) Perform K-means clustering with appropriate choice of $K$.
+(d) Make a silhouette plot and comment on the clustering solution.
+(e) Also use the $pam$ and $fanny$ functions in the package $cluster$ to implement the PAM algorithm and $fuzzy$ clustering with the same choice of $K$.
+(f) In each case make a silhouette plot and compare the different partitioning methods.
+
+#### **Theory :**
+##### **Cluster Analysis**
+Cluster Analysis is an unsupervised machine learning technique used to group similar observations into different groups called clusters. The main objective is to place similar observations in the same cluster and dissimilar observations in different clusters.
+
+Clustering identifies hidden patterns and structures in a dataset without requiring predefined class labels.
+
+In this practical, the Iris dataset is used. It contains measurements of three different species of Iris flowers: Setosa, Versicolor and Virginica.
+
+The dataset contains four numerical attributes:
+
+- Sepal Length
+- Sepal Width
+- Petal Length
+- Petal Width
+
+A subset of 25 observations is selected for better visualization. Different clustering techniques are applied to group the observations based on their similarities.
+
+##### **Data Preprocessing and Standardization**
+Data preprocessing is an important step before applying clustering algorithms. Since the Iris dataset contains attributes with different numerical scales, standardization is performed to ensure that all variables contribute equally to distance calculations.
+
+The standardization formula is:
+$$
+Z = \frac{X-\mu}{\sigma}
+$$
+
+Where:
+
+- $X$ = Original observation.
+- $\mu$ = Mean of the variable.
+- $\sigma$ = Standard deviation.
+- $Z$ = Standardized value.
+
+After standardization, each variable has approximately zero mean and unit variance.
+
+In this practical, 25 observations are selected from the Iris dataset, and the four numerical attributes are standardized before clustering.
+
+##### **Hierarchical Agglomerative Clustering (AGNES)**
+Agglomerative Nesting (AGNES) is a hierarchical clustering technique that follows a bottom-up approach.
+
+Initially, each observation is considered an individual cluster. The algorithm repeatedly merges the two closest clusters until all observations are combined into a single cluster or the required number of clusters is obtained.
+
+- ##### **Working of AGNES :**
+
+  1. Initially, each observation is treated as a separate cluster.
+  2. Calculate the distances between all clusters.
+  3. Identify the two closest clusters.
+  4. Merge these clusters into one cluster.
+  5. Recalculate the distances between the newly formed cluster and the remaining clusters.
+  6. Repeat the process until the required clustering structure is obtained.
+
+- ##### **Average Linkage Method :**
+  Average linkage calculates the distance between two clusters using the average distance between all pairs of observations belonging to the respective clusters.
+
+  Its mathematical formula is:
+$$
+D(A,B)=\frac{1}{|A||B|}
+\sum_{a\in A}\sum_{b\in B}d(a,b)
+$$
+
+  Where:
+
+  - $A$ and $B$ represent two clusters.
+  - $a$ and $b$ are observations belonging to the respective clusters.
+  - $d(a,b)$ represents the distance between two observations.
+
+  **Application:** In this practical, the `agnes()` function from the `cluster` package is used to perform hierarchical agglomerative clustering using average linkage. The results are represented using a dendrogram.
+
+##### **Hierarchical Divisive Clustering (DIANA)**
+Divisive Analysis (DIANA) is a hierarchical clustering technique that follows a top-down approach. It starts with all observations in a single cluster and progressively divides them into smaller clusters.
+
+Unlike AGNES, which merges smaller clusters, DIANA splits larger clusters.
+
+- ##### **Working of DIANA :**
+
+  1. Initially, all observations are considered as one cluster.
+  2. Identify the cluster containing the most dissimilar observations.
+  3. Select observations that are significantly different from the remaining observations.
+  4. Divide the selected cluster into smaller groups.
+  5. Repeat the splitting process until the required clustering structure is obtained.
+
+- ##### **Features of DIANA :**
+
+  - It follows a top-down clustering approach.
+  - It begins with one large cluster.
+  - It progressively divides clusters into smaller groups.
+  - It represents the clustering process using a dendrogram.
+
+  **Application:** In this practical, the `diana()` function from the `cluster` package is used to perform hierarchical divisive clustering using Euclidean distance.
+
+  **Note:** DIANA uses its own divisive splitting procedure and does not provide an average-linkage option.
+
+##### **K-Means Clustering**
+K-means is an unsupervised clustering algorithm used to divide a dataset into a specified number of clusters, represented by $K$.
+
+Each cluster is represented by a centroid, which is the mean of all observations belonging to that cluster.
+
+- ##### **Working of K-Means :**
+ 
+  1. Select the number of clusters $K$.
+  2. Initialize $K$ cluster centroids.
+  3. Calculate the distance of each observation from the centroids.
+  4. Assign each observation to its nearest centroid.
+  5. Recalculate the centroids based on the assigned observations.
+  6. Repeat the process until the cluster assignments become stable.
+
+- ##### **Objective Function :**
+  K-means minimizes the Within-Cluster Sum of Squares (WCSS).
+$$
+WCSS=\sum_{k=1}^{K}\sum_{x_i\in C_k}
+\|x_i-\mu_k\|^2
+$$
+  Where:
+
+  - $K$ = Number of clusters.
+  - $C_k$ = Observations belonging to cluster $k$.
+  - $x_i$ = Individual observation.
+  - $\mu_k$ = Centroid of cluster $k$.
+
+  **Application:** In this practical, K-means clustering is performed using $K=3$, corresponding to the three species in the Iris dataset.
+
+##### **Silhouette Analysis**
+Silhouette Analysis is a technique used to evaluate the quality of clustering solutions. It measures how well an observation fits into its assigned cluster compared with other clusters.
+
+The silhouette coefficient is calculated using the following formula:
+
+$$
+S(i)=\frac{b(i)-a(i)}
+{\max(a(i),b(i))}
+$$
+
+Where:
+
+- $a(i)$ = Average distance between observation $i$ and other observations in the same cluster.
+- $b(i)$ = Minimum average distance between observation $i$ and observations in another cluster.
+
+- ##### **Interpretation of Silhouette Values :**
+
+  - **Close to +1:** Observation is well assigned to its cluster.
+  - **Close to 0:** Observation lies between two clusters.
+  - **Negative value:** Observation may be assigned to the wrong cluster.
+
+- ##### **Importance of Silhouette Analysis :**
+  1. Evaluates the quality of clustering.
+  2. Measures the separation between clusters.
+  3. Identifies incorrectly assigned observations.
+  4. Helps compare different clustering algorithms.
+  5. Determines how well observations fit into their respective clusters.
+
+  **Application:** In this practical, silhouette plots are created for K-means clustering and other clustering methods to evaluate their clustering solutions.
+
+##### **Partitioning Around Medoids (PAM)**
+Partitioning Around Medoids (PAM) is a partitioning clustering technique similar to K-means. However, instead of using the mean of observations as the cluster center, PAM uses an actual observation called a medoid.
+
+A medoid is the most centrally located observation within a cluster.
+
+- ##### **Working of PAM :**
+  
+  1. Select the number of clusters $K$.
+  2. Choose initial medoids from the dataset.
+  3. Assign each observation to its nearest medoid.
+  4. Calculate the total dissimilarity within clusters.
+  5. Try replacing medoids with other observations to improve the clustering solution.
+  6. Repeat until no better medoid selection is found.
+
+- ##### **Features of PAM :**
+
+  - Uses actual observations as cluster centers.
+  - Can work with different dissimilarity measures.
+  - Is generally less sensitive to outliers than K-means.
+  - Minimizes the total dissimilarity between observations and their assigned medoids.
+
+  **Application:** In this practical, the `pam()` function from the `cluster` package is used to perform PAM clustering with $K=3$.
+
+##### **Fuzzy Clustering Using FANNY**
+Fuzzy Analysis (FANNY) is a fuzzy clustering technique in which an observation can belong to multiple clusters with different membership degrees.
+
+Unlike traditional clustering methods, where each observation belongs to exactly one cluster, fuzzy clustering allows partial membership in several clusters.
+
+- ##### **Working of FANNY :**
+  
+  1. Select the number of clusters $K$.
+  2. Calculate the dissimilarities between observations.
+  3. Assign membership coefficients to each observation for every cluster.
+  4. Optimize the membership values to minimize the fuzzy clustering objective function.
+  5. Continue updating the membership coefficients until convergence.
+
+- ##### **Membership Coefficients :**
+  Each observation receives membership values between 0 and 1.
+
+  The sum of membership coefficients for each observation across all clusters is equal to 1.
+$$
+\sum_{k=1}^{K}u_{ik}=1
+$$
+  Where:
+
+  - $u_{ik}$ = Membership degree of observation $i$ in cluster $k$.
+  - $K$ = Number of clusters.
+
+  For example, an observation may have membership values of 0.7, 0.2 and 0.1 in three different clusters.
+
+  This indicates that the observation belongs mainly to the first cluster but also has some membership in the other two clusters.
+
+  **Application:** In this practical, the `fanny()` function from the `cluster` package is used to perform fuzzy clustering with $K=3$.
+
+##### **Comparison of Different Clustering Methods**
+Different clustering techniques use different approaches to group observations.
+
+| Clustering Method | Approach | Main Characteristic |
+|---|---|---|
+| AGNES | Bottom-up | Merges smaller clusters |
+| DIANA | Top-down | Divides larger clusters |
+| K-means | Partitioning | Uses centroids |
+| PAM | Partitioning | Uses medoids |
+| FANNY | Fuzzy clustering | Uses membership coefficients |
+
+To compare the performance of these methods, silhouette analysis is applied.
+
+The average silhouette width is calculated for each clustering solution. A higher average silhouette width generally indicates better-defined clusters with greater separation.
+
+The method with the highest average silhouette width can be considered the best-performing method among those compared for the selected dataset and number of clusters.
+
+##### **Dendrogram**
+A Dendrogram is a tree-like graphical representation used in hierarchical clustering. It shows how observations or clusters are progressively merged or divided during the clustering process.
+
+- ##### **Main Features :**
+
+  1. Each leaf represents an individual observation.
+  2. Branches represent the merging or splitting of clusters.
+  3. The vertical height represents the dissimilarity level at which clustering operations occur.
+  4. Observations joined at smaller heights are generally more similar.
+  5. A horizontal cut across the dendrogram determines the number of clusters.
+
+  In this practical, dendrograms are plotted for both AGNES and DIANA to visualize the hierarchical clustering structures.
+
+##### **Functions Used :**
+The following R functions are used to perform cluster analysis on the Iris dataset:
+
+- `data()` – Loads the built-in Iris dataset.
+- `as.matrix()` – Converts the dataset into a matrix.
+- `rownames()` – Assigns row names to the dataset.
+- `as.character()` – Converts values into character format.
+- `head()` – Displays the first few observations.
+- `dim()` – Returns the dimensions of the dataset.
+- `str()` – Displays the structure of the dataset.
+- `scale()` – Standardizes the numerical attributes.
+- `library()` – Loads the required R package.
+- `agnes()` – Performs hierarchical agglomerative clustering.
+- `diana()` – Performs hierarchical divisive clustering.
+- `plot()` – Creates dendrograms, scatter plots and silhouette plots.
+- `as.hclust()` – Converts AGNES or DIANA results into an `hclust` object.
+- `cutree()` – Divides hierarchical clusters into a specified number of groups.
+- `table()` – Displays the frequency distribution of cluster membership.
+- `set.seed()` – Ensures reproducibility of random results.
+- `kmeans()` – Performs K-means clustering.
+- `print()` – Displays clustering results.
+- `paste()` – Combines text strings.
+- `legend()` – Adds a legend to a graph.
+- `dist()` – Calculates distances between observations.
+- `silhouette()` – Calculates silhouette widths to evaluate clustering quality.
+- `mean()` – Calculates the average silhouette width.
+- `pam()` – Performs Partitioning Around Medoids clustering.
+- `fanny()` – Performs fuzzy clustering.
+- `c()` – Combines values into a vector.
+- `names()` – Assigns names to vector elements.
+- `barplot()` – Creates a bar graph to compare average silhouette widths.
+
+**Package Used:** `cluster` – Provides functions such as `agnes()`, `diana()`, `silhouette()`, `pam()` and `fanny()` for different clustering techniques.
+
+#### **Code and Calculation :**
+##### **Cluster Analysis of Iris Dataset**
+**Loading the Iris Dataset:** The Iris dataset contains measurements of Sepal Length, Sepal Width, Petal Length and Petal Width for three different species of flowers.
+```{r}
+# Load the iris dataset
+data(iris)
+
+# Display first few observations
+head(iris)
+
+# Display dataset dimensions
+dim(iris)
+
+# Display structure
+str(iris)
+```
+
+**Preparing the Data:** Select a subset of 25 observations from the Iris dataset for better visualization. The Species column is stored separately as row names.
+```{r}
+# Select numerical attributes and observations
+data <- as.matrix(iris[, -5])[6 * (1:25), ]
+
+# Assign species names as row names
+rownames(data) <- as.character(iris$Species[6 * (1:25)])
+
+# Display prepared data
+head(data)
+
+# Check dimensions
+dim(data)
+```
+
+**Standardizing the Data:** Standardization is performed so that all four numerical attributes contribute comparably to distance calculations.
+```{r}
+# Standardize the data
+data.scaled <- scale(data)
+
+# Display standardized data
+head(data.scaled)
+```
+
+##### **(a). Perform Hierarchical Agglomerative Clustering Using Average Linkage**
+The `agnes()` function from the `cluster` package performs hierarchical agglomerative clustering. Average linkage is used to calculate the distance between clusters.
+```{r}
+# Install and load cluster package
+# install.packages("cluster")
+library(cluster)
+
+# Perform agglomerative clustering using average linkage
+agnes.fit <- agnes(data.scaled,
+                   metric = "euclidean",
+                   method = "average")
+
+# Display clustering results
+print(agnes.fit)
+```
+
+**Plot the Dendrogram:**
+```{r}
+# Plot agglomerative clustering dendrogram
+plot(agnes.fit,
+     which.plots = 2,
+     main = "Agglomerative Clustering - Average Linkage",
+     xlab = "Iris Observations",
+     ylab = "Height")
+
+# Divide into three clusters
+agnes.groups <- cutree(as.hclust(agnes.fit), k = 3)
+
+# Display cluster membership
+print(agnes.groups)
+
+# Display cluster sizes
+table(agnes.groups)
+```
+
+##### **(b). Perform Hierarchical Divisive Clustering Using DIANA**
+The `diana()` function from the `cluster` package performs hierarchical divisive clustering. It follows a top-down approach, where a large cluster is progressively divided into smaller clusters.
+
+Note: DIANA does not provide an average-linkage option. It uses its own divisive splitting procedure based on the selected distance metric.
+```{r}
+# Perform divisive hierarchical clustering
+diana.fit <- diana(data.scaled,
+                   metric = "euclidean")
+
+# Display clustering results
+print(diana.fit)
+```
+
+**Plot the Dendrogram:**
+```{r}
+# Plot divisive clustering dendrogram
+plot(diana.fit,
+     main = "Divisive Clustering - DIANA",
+     xlab = "Iris Observations",
+     ylab = "Height")
+
+# Divide into three clusters
+diana.groups <- cutree(as.hclust(diana.fit), k = 3)
+
+# Display cluster membership
+print(diana.groups)
+
+# Display cluster sizes
+table(diana.groups)
+```
+
+##### **(c). Perform K-means Clustering with an Appropriate Choice of K**
+Since the Iris dataset contains three different species, we initially select K = 3 and apply the K-means algorithm.
+```{r}
+# Set seed for reproducibility
+set.seed(123)
+
+# Perform K-means clustering
+km.fit <- kmeans(data.scaled,
+                 centers = 3,
+                 nstart = 25)
+
+# Display clustering results
+print(km.fit)
+
+# Display cluster membership
+print(km.fit$cluster)
+
+# Display cluster sizes
+km.fit$size
+
+# Display cluster centers
+km.fit$centers
+```
+
+**Visualize K-means Clusters:**
+```{r}
+# Plot clusters using first two attributes
+plot(data.scaled[, 1], data.scaled[, 2],
+     col = km.fit$cluster,
+     pch = 19,
+     main = "K-means Clustering of Iris Dataset",
+     xlab = "Sepal Length",
+     ylab = "Sepal Width")
+
+# Add legend
+legend("topright",
+       legend = paste("Cluster", 1:3),
+       col = 1:3,
+       pch = 19)
+```
+
+##### **(d). Create a Silhouette Plot and Comment on the Clustering Solution**
+A silhouette plot is used to evaluate the quality of clustering. The silhouette width measures how well an observation fits into its assigned cluster compared with other clusters.
+```{r}
+# Calculate Euclidean distance
+d <- dist(data.scaled)
+
+# Calculate silhouette for K-means
+km.sil <- silhouette(km.fit$cluster, d)
+
+# Plot silhouette
+plot(km.sil,
+     main = "Silhouette Plot - K-means",
+     col = 2:4)
+
+# Calculate average silhouette width
+mean(km.sil[, 3])
+```
+
+##### **(e). Perform PAM and FANNY Clustering Using the Same Choice of K**
+The `pam()` function performs Partitioning Around Medoids clustering, while the `fanny()` function performs fuzzy clustering.
+
+Both methods are applied using K = 3.
+
+**1. PAM Clustering**
+```{r}
+# Perform PAM clustering
+pam.fit <- pam(data.scaled, k = 3)
+
+# Display clustering results
+print(pam.fit)
+
+# Display cluster membership
+print(pam.fit$clustering)
+
+# Display cluster sizes
+table(pam.fit$clustering)
+```
+
+**2. FANNY Clustering**
+```{r}
+# Perform FANNY fuzzy clustering
+fanny.fit <- fanny(data.scaled, k = 3)
+
+# Display clustering results
+print(fanny.fit)
+
+# Display cluster membership
+print(fanny.fit$clustering)
+
+# Display membership coefficients
+print(fanny.fit$membership)
+
+# Display cluster sizes
+table(fanny.fit$clustering)
+```
+
+##### **(f). Create Silhouette Plots and Compare Different Clustering Methods**
+Silhouette plots are created for Agglomerative, Divisive, K-means, PAM and FANNY clustering to compare their performance using the same number of clusters.
+```{r}
+# Calculate silhouette for agglomerative clustering
+agnes.sil <- silhouette(agnes.groups, d)
+
+# Calculate silhouette for divisive clustering
+diana.sil <- silhouette(diana.groups, d)
+
+# Calculate silhouette for K-means
+km.sil <- silhouette(km.fit$cluster, d)
+
+# Calculate silhouette for PAM
+pam.sil <- silhouette(pam.fit$clustering, d)
+
+# Calculate silhouette for FANNY
+fanny.sil <- silhouette(fanny.fit$clustering, d)
+```
+
+**Plot Silhouette for Agglomerative Clustering:**
+```{r}
+plot(agnes.sil,
+     main = "Silhouette - Agglomerative Clustering",
+     col = 2:4)
+```
+
+**Plot Silhouette for Divisive Clustering:**
+```{r}
+plot(diana.sil,
+     main = "Silhouette - Divisive Clustering",
+     col = 2:4)
+```
+
+**Plot Silhouette for K-means Clustering:**
+```{r}
+plot(km.sil,
+     main = "Silhouette - K-means Clustering",
+     col = 2:4)
+```
+
+**Plot Silhouette for PAM Clustering:**
+```{r}
+plot(pam.sil,
+     main = "Silhouette - PAM Clustering",
+     col = 2:4)
+```
+
+**Plot Silhouette for FANNY Clustering:**
+```{r}
+plot(fanny.sil,
+     main = "Silhouette - FANNY Clustering",
+     col = 2:4)
+```
+
+**Compare Average Silhouette Widths:**
+```{r}
+# Calculate average silhouette widths
+sil.values <- c(
+  mean(agnes.sil[, 3]),
+  mean(diana.sil[, 3]),
+  mean(km.sil[, 3]),
+  mean(pam.sil[, 3]),
+  mean(fanny.sil[, 3])
+)
+
+# Assign method names
+names(sil.values) <- c(
+  "AGNES",
+  "DIANA",
+  "K-means",
+  "PAM",
+  "FANNY"
+)
+
+# Display average silhouette widths
+print(sil.values)
+
+# Compare clustering methods graphically
+barplot(sil.values,
+        main = "Comparison of Clustering Methods",
+        xlab = "Clustering Methods",
+        ylab = "Average Silhouette Width",
+        col = "skyblue",
+        ylim = c(0, 1))
+```
+
+#### **Results :**
+##### **(a). Hierarchical Agglomerative Clustering Using Average Linkage (AGNES)**
+Hierarchical agglomerative clustering was performed using the `agnes()` function with Euclidean distance and average linkage.
+
+**Results Obtained:**
+
+- Number of observations: 25
+- Agglomerative coefficient: 0.772597
+- Number of clusters: 3
+- Cluster sizes: Cluster 1 = 8, Cluster 2 = 16, Cluster 3 = 1.
+- Average silhouette width: 0.4676761.
+
+**Interpretation:**
+
+- AGNES follows a bottom-up approach by progressively merging smaller clusters.
+- The dendrogram represents the merging process.
+- The agglomerative coefficient of 0.7726 indicates a reasonably strong hierarchical structure.
+- The silhouette plot gives an average silhouette width of approximately 0.47.
+- One cluster contains only one observation, indicating an uneven cluster distribution.
+
+Thus, AGNES successfully forms three clusters, although their sizes are not balanced.
+
+##### **(b). Hierarchical Divisive Clustering Using DIANA**
+
+Hierarchical divisive clustering was performed using the `diana()` function with Euclidean distance.
+
+**Results Obtained:**
+
+- Number of observations: 25
+- Divisive coefficient: 0.8563329
+- Number of clusters: 3
+- Cluster sizes: Cluster 1 = 8, Cluster 2 = 10, Cluster 3 = 7.
+- Average silhouette width: 0.4798519.
+
+**Interpretation:**
+
+- DIANA follows a top-down approach by progressively dividing larger clusters into smaller clusters.
+- The divisive coefficient of 0.8563 indicates a strong hierarchical structure.
+- The dendrogram shows the division of observations into smaller groups.
+- The average silhouette width is approximately 0.48, indicating moderate cluster separation.
+
+Thus, DIANA successfully divides the observations into three clusters with reasonably good separation.
+
+##### **(c). K-means Clustering Using K = 3**
+
+K-means clustering was performed by selecting K = 3 because the Iris dataset contains three different species.
+
+**Results Obtained:**
+
+- Number of observations: 25
+- Number of clusters: 3
+- Cluster sizes: Cluster 1 = 8, Cluster 2 = 10, Cluster 3 = 7.
+- Between-cluster variation: 77.7%.
+- Average silhouette width: 0.4798519.
+
+**Cluster Means (Standardized):**
+
+| Attribute | Cluster 1 | Cluster 2 | Cluster 3 |
+|---|---:|---:|---:|
+| Sepal Length | -1.0265 | -0.0933 | 1.3065 |
+| Sepal Width | 0.5980 | -0.7943 | 0.4513 |
+| Petal Length | -1.3219 | 0.3703 | 0.9817 |
+| Petal Width | -1.3257 | 0.4483 | 0.8746 |
+
+**Interpretation:**
+
+- Cluster 1 mainly represents Setosa observations.
+- Cluster 2 mainly represents Versicolor observations.
+- Cluster 3 mainly represents Virginica observations.
+- The scatter plot shows the distribution of the three clusters.
+- The between-cluster variation of 77.7% indicates that a substantial proportion of the total variation is explained by differences between clusters.
+- The average silhouette width of approximately 0.48 indicates moderate cluster separation.
+
+Thus, K-means successfully groups the observations into three clusters.
+
+##### **(d). Silhouette Plot and Evaluation of K-means Clustering**
+
+Silhouette analysis was performed to evaluate the quality of the K-means clustering solution.
+
+**Results Obtained:**
+
+| Cluster | Observations | Average Silhouette Width |
+|---|---:|---:|
+| Cluster 1 | 8 | 0.60 |
+| Cluster 2 | 10 | 0.46 |
+| Cluster 3 | 7 | 0.37 |
+| **Overall Average** | **25** | **0.4798519** |
+
+**Interpretation:**
+
+- Cluster 1 has the highest average silhouette width of 0.60.
+- Cluster 2 has an average silhouette width of 0.46.
+- Cluster 3 has an average silhouette width of 0.37.
+- The overall average silhouette width is approximately 0.48.
+
+Therefore, the K-means clustering solution shows moderate cluster separation, with Cluster 1 being the best-defined cluster.
+
+##### **(e). Perform PAM and FANNY Clustering Using K = 3**
+
+**1. PAM Clustering**
+
+PAM clustering was performed using the `pam()` function with K = 3.
+
+**Results Obtained:**
+
+- Number of observations: 25
+- Number of clusters: 3
+- Cluster sizes: Cluster 1 = 8, Cluster 2 = 10, Cluster 3 = 7.
+- Average silhouette width: 0.4798519.
+
+**Interpretation:**
+
+- PAM uses medoids instead of centroids as cluster centers.
+- The three clusters contain 8, 10 and 7 observations, respectively.
+- The average silhouette width of approximately 0.48 indicates reasonably good cluster separation.
+
+Thus, PAM successfully groups the observations into three clusters.
+
+**2. FANNY Clustering**
+
+FANNY clustering was performed using the `fanny()` function with K = 3.
+
+**Results Obtained:**
+
+- Number of observations: 25
+- Number of clusters: 3
+- Cluster sizes based on hard membership: Cluster 1 = 8, Cluster 2 = 9, Cluster 3 = 8.
+- Fuzzy coefficient: 0.5246869.
+- Normalized fuzzy coefficient: 0.2870303.
+- Average silhouette width: 0.4637268.
+
+**Interpretation:**
+
+- FANNY allows each observation to belong to multiple clusters with different membership degrees.
+- Membership coefficients indicate the degree of belonging to each cluster.
+- The highest membership value indicates the strongest cluster association.
+- The average silhouette width is approximately 0.46.
+
+Thus, FANNY provides fuzzy cluster assignments with moderate separation between clusters.
+
+##### **(f). Silhouette Comparison of Different Clustering Methods**
+
+Silhouette analysis was performed for all five clustering methods using the same dataset and K = 3.
+
+**Average Silhouette Widths Obtained:**
+
+| Clustering Method | Average Silhouette Width |
+|---|---:|
+| AGNES | 0.4676761 |
+| DIANA | 0.4798519 |
+| K-means | 0.4798519 |
+| PAM | 0.4798519 |
+| FANNY | 0.4637268 |
+
+**Interpretation:**
+
+- DIANA, K-means and PAM have the highest average silhouette width of 0.4798519.
+- AGNES has an average silhouette width of 0.4676761.
+- FANNY has the lowest average silhouette width of 0.4637268.
+- All five methods produce moderate clustering quality.
+- DIANA, K-means and PAM show slightly better cluster separation than AGNES and FANNY.
+
+Therefore, DIANA, K-means and PAM perform comparatively better for the selected Iris dataset subset.
+
+##### **Overall Results**
+
+| Part | Clustering Method | Number of Clusters | Average Silhouette |
+|---|---|---:|---:|
+| (a) | AGNES | 3 | 0.4677 |
+| (b) | DIANA | 3 | 0.4799 |
+| (c) | K-means | 3 | 0.4799 |
+| (d) | Silhouette Analysis | 3 | 0.4799 |
+| (e) | PAM | 3 | 0.4799 |
+| (e) | FANNY | 3 | 0.4637 |
+
+#### **Conclusion :**
+
+The Iris dataset was successfully analyzed using five clustering techniques: AGNES, DIANA, K-means, PAM and FANNY. AGNES and DIANA performed hierarchical clustering, while K-means and PAM performed partitioning clustering and FANNY performed fuzzy clustering.
+
+Silhouette analysis was used to evaluate and compare the clustering solutions. DIANA, K-means and PAM achieved the highest average silhouette width of 0.4799, while FANNY achieved 0.4637.
+
+Thus, **DIANA, K-means and PAM provided comparatively better clustering solutions** for the selected 25 observations of the Iris dataset.
+
+

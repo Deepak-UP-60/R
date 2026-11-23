@@ -1,0 +1,298 @@
+---
+title: "Practical 21"
+author: "Deepak Kumar Bharti"
+date: '25056765013'
+output: html_document
+---
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+To analyse a Randomized Block Design (RBD) using ANOVA and determine the Critical Difference (CD) and relative efficiency over CRD using R.
+
+#### **Problem :**
+Consider the result given in the following table for an experiment involving $6$ treatments in $4$ random blocks. The treatments are indicated by numbers within parentheses :
+
+| Block | Column 1 | Column 2 | Column 3 | Column 4 | Column 5 | Column 6 |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| I | (1) 24.7 | (3) 27.7 | (2) 20.6 | (4) 16.2 | (5) 16.2 | (6) 24.9 |
+| II | (3) 22.7 | (2) 28.8 | (1) 27.3 | (4) 15.0 | (6) 22.5 | (5) 17.0 |
+| III | (6) 26.7 | (4) 19.6 | (1) 38.5 | (3) 36.8 | (2) 39.5 | (5) 15.4 |
+| IV | (5) 17.7 | (2) 31.0 | (1) 28.5 | (4) 14.1 | (3) 34.9 | (6) 22.6 |
+
+Test whether the treatments differ significantly. Also,
+
+1. Determine the critical difference between the means of two treatments.
+2. Obtain the efficiency of this design relative to its layout as a Completely Randomized Design (CRD).
+
+#### **Theory :**
+
+##### **Randomized Block Design (RBD)**
+Randomized Block Design (RBD) is an experimental design used in agricultural, biological, and statistical experiments to compare the effects of different treatments while controlling the variation among experimental units. In this design, the experimental units are divided into groups called **blocks**, such that the units within each block are as homogeneous as possible.
+
+Each block contains all the treatments exactly once, and the treatments are randomly allocated within each block. This helps to reduce experimental error caused by differences among blocks and improves the precision of treatment comparisons.
+
+In the given practical, there are **6 treatments and 4 blocks**, making a total of 24 experimental observations. Each treatment is replicated 4 times, once in each block.
+
+- ##### **Statistical Model of RBD :**
+  The statistical model for a Randomized Block Design is:
+$$
+Y_{ij} = \mu + \tau_i + \beta_j + \epsilon_{ij}
+$$
+  Where :
+
+  - $Y_{ij}$ = Observation of the $i^{th}$ treatment in the $j^{th}$ block.
+  - $\mu$ = Overall mean of the experiment.
+  - $\tau_i$ = Effect of the $i^{th}$ treatment.
+  - $\beta_j$ = Effect of the $j^{th}$ block.
+  - $\epsilon_{ij}$ = Random experimental error.
+    
+  The assumptions of RBD are:
+  
+  1. The errors are independently and normally distributed.
+  2. The error variance is constant.
+  3. Treatment and block effects are additive.
+  4. Treatments are randomly allocated within each block.
+
+- ##### **Analysis of Variance (ANOVA) in RBD :**
+  Analysis of Variance (ANOVA) is a statistical technique used to test whether the means of different treatments differ significantly.
+    
+  In RBD, the total variation is divided into the following components:
+
+  - **Total Sum of Squares (TSS)**
+    It represents the total variation present in the observations.
+$$
+TSS = \sum Y_{ij}^{2} - CF
+$$
+
+  - **Treatment Sum of Squares (TrSS)**
+    It measures the variation due to differences among treatments.
+$$
+TrSS = \frac{\sum T_i^2}{r} - CF
+$$
+
+  - **Block Sum of Squares (BSS)**
+    It measures the variation due to differences among blocks.
+$$
+BSS = \frac{\sum B_j^2}{t} - CF
+$$
+
+  - **Error Sum of Squares (ESS)**
+    It represents the unexplained variation remaining after removing treatment and block effects.
+$$
+ESS = TSS - TrSS - BSS
+$$
+
+  Where :
+  
+  - $T_i$ = Total of observations under the $i^{th}$ treatment.
+  - $B_j$ = Total of observations under the $j^{th}$ block.
+  - $r$ = Number of replications (blocks).
+  - $t$ = Number of treatments.
+  - $CF$ = Correction Factor.
+$$
+CF = \frac{G^2}{N}
+$$
+
+  Here, $G$ is the grand total of all observations and $N$ is the total number of observations.
+
+- ##### **Degrees of Freedom :**
+  The degrees of freedom for different sources of variation in RBD are :
+  
+  | Source of Variation | Degrees of Freedom |
+  |:---|:---:|
+  | Treatments | $t-1$ |
+  | Blocks | $r-1$ |
+  | Error | $(t-1)(r-1)$ |
+  | Total | $tr-1$ |
+  
+  For the given experiment:
+  
+  - Number of treatments = 6
+  - Number of blocks = 4
+  - Total observations = 24
+
+  Therefore :
+  
+  | Source | Degrees of Freedom |
+  |:---|:---:|
+  | Treatments | 5 |
+  | Blocks | 3 |
+  | Error | 15 |
+  | Total | 23 |
+
+- ##### **F-Test for Testing Treatment Significance :**
+  The F-test is used to determine whether the differences among treatment means are statistically significant.
+    
+  The hypotheses are:
+  
+  **Null Hypothesis $(H_0)$:** All treatment means are equal.
+$$
+\mu_1 = \mu_2 = \mu_3 = \mu_4 = \mu_5 = \mu_6
+$$
+
+  **Alternative Hypothesis $(H_1)$:** At least one treatment mean differs significantly from the others.
+  
+  The calculated F-statistic is:
+$$
+F = \frac{MS_{Treatment}}{MS_{Error}}
+$$
+
+  Where :
+$$
+MS = \frac{SS}{df}
+$$
+
+  The calculated F-value is compared with the tabulated F-value at the 5% level of significance.
+  
+  - If $F_{cal} > F_{tab}$, reject the null hypothesis.
+  - If $F_{cal} \leq F_{tab}$, do not reject the null hypothesis.
+
+- ##### **Critical Difference (CD) :**
+  Critical Difference (CD), also known as Least Significant Difference (LSD), is used to compare treatment means pairwise after obtaining a significant treatment effect through ANOVA.
+  
+  It determines whether the difference between two treatment means is statistically significant.
+  
+  The formula for calculating CD is:
+$$
+CD = t_{\alpha/2,df_e} \times SE(d)
+$$
+
+  Where :
+$$
+SE(d) = \sqrt{\frac{2MSE}{r}}
+$$
+
+  Therefore,
+$$
+\boxed{CD = t_{\alpha/2,df_e}\sqrt{\frac{2MSE}{r}}}
+$$
+
+  Where :
+  
+  - $t_{\alpha/2,df_e}$ = Tabulated t-value at the 5% significance level.
+  - $MSE$ = Mean Square Error.
+  - $r$ = Number of replications.
+  - $df_e$ = Error degrees of freedom.
+
+  **Interpretation:**
+  
+  - If the absolute difference between two treatment means is greater than CD, the difference is significant.
+  - If the absolute difference is less than or equal to CD, the difference is not significant.
+
+- ##### **Relative Efficiency of RBD over CRD :**
+  Relative efficiency is used to compare the efficiency of Randomized Block Design (RBD) with Completely Randomized Design (CRD).
+  
+  In CRD, the experimental units are assigned treatments completely at random without forming blocks. In RBD, the variation among blocks is separated from the experimental error, which may improve the precision of treatment comparisons.
+    
+  The formula for relative efficiency is:
+$$
+\boxed{RE = \frac{MSE_{CRD}}{MSE_{RBD}} \times 100}
+$$
+
+  Where :
+  
+  - $MSE_{CRD}$ = Error mean square under CRD.
+  - $MSE_{RBD}$ = Error mean square under RBD.
+
+  **Interpretation:**
+  
+  - If RE is greater than 100%, RBD is more efficient than CRD.
+  - If RE is equal to 100%, both designs have equal efficiency.
+  - If RE is less than 100%, CRD is more efficient than RBD.
+
+##### **Functions Used :**
+- `factor()` – Converts treatment and block variables into categorical factors.
+- `rep()` – Repeats values to create treatment and block sequences.
+- `c()` – Combines observations into a vector.
+- `data.frame()` – Creates a data frame containing the experimental data.
+- `aov()` – Performs Analysis of Variance (ANOVA).
+- `summary()` – Displays the ANOVA results.
+- `tapply()` – Calculates the mean for each treatment.
+- `qt()` – Calculates the critical t-value from the t-distribution.
+- `cat()` – Displays the calculated results.
+- `sqrt()` – Calculates the square root while determining the Critical Difference (CD).
+
+#### **Code and Calculation :**
+```{r}
+# Entering the experimental data
+treatment <- factor(rep(1:6, each = 4))
+block <- factor(rep(1:4, times = 6))
+
+y <- c(
+  24.7, 27.3, 38.5, 28.5,
+  20.6, 28.8, 39.5, 31.0,
+  27.7, 22.7, 36.8, 34.9,
+  16.2, 15.0, 19.6, 14.1,
+  16.2, 17.0, 15.4, 17.7,
+  24.9, 22.5, 26.7, 22.6
+)
+
+data <- data.frame(treatment, block, y)
+
+# Performing ANOVA for Randomized Block Design
+model <- aov(y ~ treatment + block, data = data)
+anova_table <- summary(model)[[1]]
+print(anova_table)
+
+# Calculating treatment means
+means <- tapply(y, treatment, mean)
+print(means)
+
+# Calculating Critical Difference at 5% level
+MSE <- anova_table["Residuals", "Mean Sq"]
+df <- anova_table["Residuals", "Df"]
+t_value <- qt(0.975, df)
+CD <- t_value * sqrt(2 * MSE / 4)
+
+cat("Critical Difference =", CD)
+
+# Calculating pairwise differences
+pairwise <- combn(1:6, 2)
+
+for (i in 1:ncol(pairwise)) {
+  t1 <- pairwise[1, i]
+  t2 <- pairwise[2, i]
+
+  diff <- abs(means[t1] - means[t2])
+
+  cat("Treatment", t1, "and Treatment", t2,
+      "Difference =", round(diff, 3),
+      ifelse(diff > CD, "Significant", "Not Significant"),
+      "\n")
+}
+
+# Calculating error mean square under CRD
+model_crd <- aov(y ~ treatment, data = data)
+crd_table <- summary(model_crd)[[1]]
+MSE_crd <- crd_table["Residuals", "Mean Sq"]
+
+# Calculating relative efficiency of RBD over CRD
+RE <- (MSE_crd / MSE) * 100
+
+cat("Relative Efficiency =", RE, "%")
+```
+
+#### **Results :**
+The given experimental data were analysed using Randomized Block Design (RBD) in R programming. The following results were obtained:
+
+- The treatment means were found to be 29.750, 29.975, 30.525, 16.225, 16.575 and 24.175 for Treatments 1 to 6, respectively. Treatment 3 recorded the highest mean (30.525), whereas Treatment 4 recorded the lowest mean (16.225).
+
+- The ANOVA results showed that the treatment effect was significant (p-value = 8.853e-05), indicating that there is a significant difference among the six treatment means.
+
+- The block effect was also significant (p-value = 0.01432), indicating that variation among the four blocks significantly influenced the experimental observations.
+
+- The Critical Difference (CD) at the 5% level of significance was found to be **5.87157**.
+
+- From the pairwise comparison of treatment means, 9 comparisons were found to be significant, while 6 comparisons were found to be non-significant.
+
+- The relative efficiency of RBD over CRD was found to be **165.0762%**, indicating that RBD is more efficient than CRD for the given experiment.
+
+Hence, it is concluded that the treatments differ significantly, and the use of Randomized Block Design provides better experimental precision than Completely Randomized Design.
+
+#### **Conclusions :**
+The experimental data were successfully analysed using Randomized Block Design (RBD) in R. The ANOVA results indicate that the treatment effects differ significantly at the 5% level of significance. Treatment 3 has the highest mean of 30.525, while Treatment 4 has the lowest mean of 16.225. The calculated Critical Difference is 5.87157, and 9 out of 15 pairwise treatment comparisons are significant. The relative efficiency of RBD over CRD is 165.0762%, indicating that RBD is more efficient than CRD for this experiment.
+

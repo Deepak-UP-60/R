@@ -1,0 +1,270 @@
+---
+title: "Practical 20"
+author: "Deepak Kumar Bharti"
+date: '25056765013'
+output: html_document
+---
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+To compare the mean passage times of aluminium powder through six test units using ANOVA under Randomized Block Design (RBD) and determine the Critical Difference (CD) at the 5% level of significance.
+
+#### **Problem :**
+The following data are from $5$ replicate runs on the time taken for aluminium powder to pass through $6$ different test units.
+
+| Runs / $Units$ | $1$ | $2$ | $3$ | $4$ | $5$ | $6$ |
+|:--------------:|:---:|:---:|:---:|:---:|:---:|:---:|
+| 1 | 52.9 | 54.0 | 52.6 | 50.5 | 54.6 | 54.0 |
+| 2 | 52.3 | 53.8 | 53.2 | 50.8 | 54.6 | 53.3 |
+| 3 | 52.2 | 53.8 | 53.4 | 50.7 | 54.4 | 53.7 |
+| 4 | 52.5 | 53.6 | 53.4 | 50.8 | 54.4 | 53.5 |
+| 5 | 52.7 | 53.6 | 53.0 | 50.5 | 54.4 | 53.7 |
+
+Analyse the data and make an ANOVA table. Conclude whether the 6 units differ.
+
+Also, find out the critical difference.
+
+#### **Theory :**
+
+##### **Analysis of Variance (ANOVA)**
+Analysis of Variance (ANOVA) is a statistical technique used to compare the means of two or more groups and determine whether there is a significant difference among them.
+
+In this practical, ANOVA is used to analyse the time taken by aluminium powder to pass through six different test units. The experiment consists of five replicate runs for each test unit.
+
+Since each of the six test units is tested in all five runs, the experiment follows a Randomized Block Design (RBD).
+
+- ##### **Principle of ANOVA :**
+  ANOVA is based on the principle of dividing the total variation present in the data into different components:
+    
+  1. Total variation: Variation among all observations.
+  2. Treatment variation: Variation caused by differences among the six test units.
+  3. Block variation: Variation caused by differences among the five replicate runs.
+  4. Error variation: Variation that cannot be explained by treatments or blocks.
+  
+  The significance of differences among the test units is determined using the F-test.
+
+- ##### **Hypotheses :**
+  - **Null Hypothesis $(H_0)$ :**
+    There is no significant difference among the mean times taken by the six test units.
+$$
+H_0: \mu_1 = \mu_2 = \mu_3 = \mu_4 = \mu_5 = \mu_6
+$$
+  
+  - **Alternative Hypothesis $(H_1)$ :**
+    At least one test unit has a significantly different mean time.
+
+- ##### **Statistical Model :**
+  The statistical model for Randomized Block Design is:
+$$
+Y_{ij} = \mu + \tau_i + \beta_j + \epsilon_{ij}
+$$
+  Where :
+  
+  - $Y_{ij}$ = Observation for the ith test unit in the jth run.
+  - $\mu$ = Overall population mean.
+  - $\tau_i$ = Effect of the ith test unit.
+  - $\beta_j$ = Effect of the jth replicate run.
+  - $\epsilon_{ij}$ = Random experimental error.
+
+- ##### **Assumptions of ANOVA :**
+  The following assumptions are made:
+  
+  1. Observations are independent.
+  2. Errors are normally distributed.
+  3. Variances are equal across treatments.
+  4. Treatment and block effects are additive.
+  5. Experimental observations are obtained through proper randomization.
+
+- ##### **ANOVA Calculations :**
+  Let:
+  
+  - $t$ = Number of treatments (test units) = 6.
+  - $r$ = Number of blocks (replicate runs) = 5.
+  - $N$ = Total number of observations = 30.
+
+  - **Correction Factor (CF)**
+$$
+CF = \frac{G^2}{N}
+$$
+    Where G is the grand total of all observations.
+
+  - **Total Sum of Squares (TSS)**
+$$
+TSS = \sum Y_{ij}^{2} - CF
+$$
+
+  - **Treatment Sum of Squares (SST)**
+$$
+SS_T = \frac{\sum T_i^2}{r} - CF
+$$
+
+  - **Block Sum of Squares (SSB)**
+$$
+SS_B = \frac{\sum B_j^2}{t} - CF
+$$
+
+  - **Error Sum of Squares (SSE)**
+$$
+SS_E = TSS - SS_T - SS_B
+$$
+
+- ##### **Degrees of Freedom :**
+  The degrees of freedom are calculated as follows:
+  
+  | Source of Variation | Degrees of Freedom |
+  |:--------------------|:------------------:|
+  | Treatments | $t-1=5$ |
+  | Blocks (Runs) | $r-1=4$ |
+  | Error | $(t-1)(r-1)=20$ |
+  | Total | $N-1=29$ |
+
+- ##### **Variance Ratio (F-Test) :**
+  The mean sum of squares is calculated by dividing the sum of squares by the corresponding degrees of freedom.
+
+  - **Mean Square for Treatments (MSB)**
+$$
+MST = \frac{SS_T}{t-1}
+$$
+
+  - **Mean Square Error (MSE)**
+$$
+MSE = \frac{SS_E}{(t-1)(r-1)}
+$$
+
+  - **Calculated F-value**
+$$
+F_{cal} = \frac{MST}{MSE}
+$$
+  The calculated F-value is compared with the tabulated F-value at the 5% level of significance.
+  
+  - If $F_{cal} > F_{tab}$, reject the null hypothesis.
+  - If $F_{cal} \leq F_{tab}$, fail to reject the null hypothesis.
+
+- ##### **Critical Difference (CD) :**
+  Critical Difference (CD), also called Least Significant Difference (LSD), is used to compare the treatment means individually.
+
+  It is calculated using:
+$$
+CD = t_{\alpha/2,df_e} \sqrt{\frac{2MSE}{r}}
+$$
+
+  Where :
+  
+  - $t_{\alpha/2,df_e}$ = Tabulated t-value at the 5% significance level.
+  - $MSE$ = Mean square error.
+  - $r$ = Number of replications.
+  
+  If the absolute difference between two treatment means is greater than the CD value, the difference is considered statistically significant at the chosen significance level.
+
+##### **Functions Used :**
+- `matrix()` – Creates a matrix to store experimental data.
+- `c()` – Combines values into a vector.
+- `paste0()` – Creates treatment and run names.
+- `data.frame()` – Converts data into a data frame.
+- `as.vector()` – Converts matrix data into a vector.
+- `factor()` – Converts categorical variables into factors.
+- `aov()` – Performs Analysis of Variance (ANOVA).
+- `summary()` – Displays the ANOVA table.
+- `colMeans()` – Calculates the mean of each test unit.
+- `combn()` – Generates all possible pairs of test units.
+- `qt()` – Calculates the critical t-value.
+- `sqrt()` – Calculates the square root.
+- `abs()` – Calculates the absolute difference between means.
+- `cat()` – Displays formatted output.
+- `ifelse()` – Checks whether differences are significant.
+
+#### **Code and Calculation :**
+```{r}
+# Entering the data
+data <- matrix(c(
+  52.9, 54.0, 52.6, 50.5, 54.6, 54.0,
+  52.3, 53.8, 53.2, 50.8, 54.6, 53.3,
+  52.2, 53.8, 53.4, 50.7, 54.4, 53.7,
+  52.5, 53.6, 53.4, 50.8, 54.4, 53.5,
+  52.7, 53.6, 53.0, 50.5, 54.4, 53.7
+), nrow = 5, byrow = TRUE)
+
+colnames(data) <- paste0("Unit", 1:6)
+rownames(data) <- paste0("Run", 1:5)
+
+print(data)
+
+# Converting data into a data frame
+df <- data.frame(
+  Time = as.vector(data),
+  Unit = factor(rep(1:6, each = 5)),
+  Run = factor(rep(1:5, times = 6))
+)
+
+# Performing RBD ANOVA
+model <- aov(Time ~ Run + Unit, data = df)
+
+# Displaying ANOVA table
+summary(model)
+
+# Calculating critical difference
+MSE <- 0.0626
+r <- 5
+df_error <- 20
+
+t_value <- qt(0.975, df_error)
+
+CD <- t_value * sqrt(2 * MSE / r)
+
+cat("The Critical Difference is :",CD)
+
+# Calculating means of each unit
+means <- colMeans(data)
+
+print(means)
+
+# Calculating pairwise differences
+pairwise <- combn(1:6, 2)
+
+for (i in 1:ncol(pairwise)) {
+  u1 <- pairwise[1, i]
+  u2 <- pairwise[2, i]
+
+  diff <- abs(means[u1] - means[u2])
+
+  cat("Unit", u1, "and Unit", u2,
+      "Difference =", diff,
+      ifelse(diff > CD, "Significant", "Not Significant"),
+      "\n")
+}
+
+```
+
+#### **Results :**
+The data obtained from five replicate runs on six different test units were analysed using Analysis of Variance (ANOVA) under Randomized Block Design (RBD) in R.
+
+- The ANOVA results showed that the effect of runs was not statistically significant, as the calculated F-value was 0.192 with a p-value of 0.94.
+
+- The effect of test units was highly statistically significant, as the calculated F-value was 142.054 with a p-value of 6.48 × 10^-15.
+
+- The mean time taken by each test unit was found to be:
+
+   - Unit 1 = 52.52
+   - Unit 2 = 53.76
+   - Unit 3 = 53.12
+   - Unit 4 = 50.66
+   - Unit 5 = 54.48
+   - Unit 6 = 53.64
+
+- The calculated Critical Difference (CD) at the 5% level of significance was **0.3300835**.
+
+- Pairwise comparison of treatment means showed that all differences between test units were statistically significant except between Unit 2 and Unit 6, where the difference was 0.12, which is less than the CD value.
+
+- Unit 5 had the highest mean passage time (54.48), whereas Unit 4 had the lowest mean passage time (50.66).
+
+#### **Conclusions :**
+
+The ANOVA results indicate that there is a highly significant difference among the six test units in the time taken by aluminium powder to pass through them.
+
+The differences between treatment means were further examined using the Critical Difference (CD) test. All pairs of units showed significant differences except Unit 2 and Unit 6.
+
+Therefore, the null hypothesis is rejected, and it is concluded that the six test units do not perform equally at the 5% level of significance.

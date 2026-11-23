@@ -1,0 +1,188 @@
+---
+title: "Practical 12"
+author: "Deepak Kumar Bharti"
+date: '25056765013'
+output: html_document
+---
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+To create and manipulate a vegetable sales data frame in R by calculating revenue and its proportion, classifying vegetables by color, finding revenue differences, and extracting non-green vegetables.
+
+#### **Problem :**
+Create a data frame using the following data for some 20 vegetables at a supermarket sold in a month. The names of the vegetables (in order) are as follows :
+  
+  Eggplant, Pea, Cucumber, Potato, Pumpkin, Lettuce,
+  Tomato, Sweet potato, Mushroom, Green bean, Corn,     Cauliflower, Beetroot, Bell pepper, Broccoli,         Celery, Cabbage, Carrot, Onion, Lady figure.
+  
+Perform the following :
+  
+1. Add these names, as the row names of the above data frame.
+2. Calculate the **revenue** for each vegetable and its **proportion** in the total revenue.
+3. Add the label **‘green’** where $1$ is written and the label **‘other color’**, where $2$ is written.
+4. Calculate the difference between **‘green’** color vegetables **‘other color’** vegetables revenues.
+5. **Replace** the label **‘other color’** by **‘not green’**.
+6. **Extract** all the rows where **‘not green’** is appearing.
+
+| Sl. No. | Sales (Kg) | Price/Kg | Color flag | Sl. No. | Sales (Kg) | Price/Kg | Color flag |
+|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 200 | 40 | 2 | 11 | 500 | 40 | 2 |
+| 2 | 100 | 80 | 1 | 12 | 185 | 60 | 1 |
+| 3 | 100 | 40 | 1 | 13 | 200 | 100 | 2 |
+| 4 | 400 | 60 | 2 | 14 | 150 | 65 | 2 |
+| 5 | 500 | 70 | 2 | 15 | 240 | 45 | 1 |
+| 6 | 800 | 90 | 1 | 16 | 500 | 60 | 1 |
+| 7 | 150 | 40 | 2 | 17 | 250 | 65 | 1 |
+| 8 | 200 | 90 | 2 | 18 | 170 | 35 | 2 |
+| 9 | 120 | 30 | 2 | 19 | 350 | 85 | 2 |
+| 10 | 400 | 30 | 1 | 20 | 180 | 60 | 1 |
+
+#### **Theory :**
+A **data frame** in R is a two-dimensional data structure used to store data in rows and columns. In this practical, the data frame contains information about vegetable sales, price per kg, and color flags. Row names are assigned using the vegetable names.
+
+The **revenue** of each vegetable is calculated by multiplying sales by price per kg. The **proportion of total revenue** is calculated by dividing each vegetable's revenue by the total revenue. The `ifelse()` function is used to classify vegetables as **green** or **other colo**r based on the color flag. R's filtering and indexing techniques are then used to calculate revenue differences, modify labels, and extract rows of **not green** vegetables.
+
+
+##### **Functions Used :**
+- `c()` – Creates a vector.
+- `data.frame()` – Creates a data frame.
+- `rownames()` – Assigns row names to the data frame.
+- `sum()` – Calculates the total/sum of values.
+- `ifelse()` – Assigns values based on a condition.
+- `abs()` – Finds the absolute value.
+- `data.frame[condition, ]` – Extracts or filters specific rows and columns.
+
+#### **Code and Calculation :**
+Creating the Data Frame :
+```{r}
+# Vegetable names
+vegetable <- c(
+  "Eggplant", "Pea", "Cucumber", "Potato", "Pumpkin",
+  "Lettuce", "Tomato", "Sweet potato", "Mushroom", "Green bean",
+  "Corn", "Cauliflower", "Beetroot", "Bell pepper", "Broccoli",
+  "Celery", "Cabbage", "Carrot", "Onion", "Lady figure"
+)
+
+# Given data
+sales <- c(
+  200, 100, 100, 400, 500, 800, 150, 200, 120, 400,
+  500, 185, 200, 150, 240, 500, 250, 170, 350, 180
+)
+
+price <- c(
+  40, 80, 40, 60, 70, 90, 40, 90, 30, 30,
+  40, 60, 100, 65, 45, 60, 65, 35, 85, 60
+)
+
+color_flag <- c(
+  2, 1, 1, 2, 2, 1, 2, 2, 2, 1,
+  2, 1, 2, 2, 1, 1, 1, 2, 2, 1
+)
+
+# Creating data frame
+vegetables <- data.frame(
+  Sales = sales,
+  Price_Kg = price,
+  Color_flag = color_flag
+)
+```
+```{r data, echo = FALSE}
+cat("The created dataframe is :")
+vegetables
+```
+
+**1.** Adding vegetable names, as the row names of the above data frame.
+```{r}
+# Adding vegetable names as row names
+rownames(vegetables) <- vegetable
+```
+```{r first, echo = FALSE}
+cat("The dataframe after adding the vegetable names as row names is :")
+vegetables
+```
+
+**2.** Calculating the revenue for each vegetable and its proportion in the total revenue.
+```{r}
+vegetables$Revenue <- vegetables$Sales * vegetables$Price_Kg
+
+# Total revenue
+total_revenue <- sum(vegetables$Revenue)
+
+# Proportion of total revenue
+vegetables$Proportion <- vegetables$Revenue / total_revenue
+```
+```{r Revenue, echo = FALSE}
+cat("The revenue for each vegetable and its proportion in the total revenue are shown below :")
+vegetables
+```
+
+**3.** Adding the label ‘green’ where 1 is written and the label ‘other color’, where 2 is written.
+```{r}
+vegetables$Color <- ifelse(
+  vegetables$Color_flag == 1,
+  "green",
+  "other color"
+)
+```
+```{r label, echo = FALSE}
+cat("The dataframe after adding the label ‘green’ where 1 is written and the label ‘other color’, where 2 is written is :")
+vegetables
+```
+
+**4.** Calculating the difference between ‘green’ color vegetables' ‘other color’ vegetables revenues.
+```{r}
+green_revenue <- sum(vegetables$Revenue[vegetables$Color == "green"])
+
+other_revenue <- sum(vegetables$Revenue[vegetables$Color == "other color"])
+```
+```{r Rev, echo = FALSE}
+cat("The revenue of ‘green’ color vegetables is :",green_revenue)
+cat("The revenue of ‘other color’ vegetables is :",other_revenue)
+```
+```{r}
+# calculating the difference
+difference <- green_revenue - other_revenue
+
+cat("The difference between ‘green’ color vegetables' ‘other color’ vegetables revenues is :",abs(difference))
+```
+
+**5.** Replacing the label ‘other color’ by ‘not green’.
+```{r}
+vegetables$Color[vegetables$Color == "other color"] <- "not green"
+```
+```{r replace, echo = FALSE}
+cat("The dataframe after replacing the label ‘other color’ by ‘not green’ :")
+vegetables
+```
+
+**6.** Extracting all the rows where ‘not green’ is appearing.
+```{r}
+not_green <- vegetables[vegetables$Color == "not green", ]
+```
+```{r extract, echo = FALSE}
+cat("The extracted rows of vagetables which is not green are :")
+not_green
+```
+
+#### **Results & Conclusions :**
+- A data frame containing the sales, price/kg, and color flag of 20 vegetables was successfully created.
+
+- Vegetable names were assigned as row names.
+
+- Revenue and proportion of total revenue were calculated successfully.
+
+- Total revenue was found to be **₹3,55,000**.
+
+- Revenue from green vegetables was **₹1,74,950**, while revenue from other-color vegetables was **₹1,80,050**.
+  
+  And the difference in revenue was **₹5,100**, with other-color vegetables having higher revenue.
+  
+- The label **“other color”** was successfully replaced with **“not green”**.
+
+- All rows corresponding to “not green” vegetables were successfully extracted.
+
+The given vegetable sales data was successfully created and analyzed using R. Revenue, proportions, color classification, revenue difference, and filtering of non-green vegetables were performed successfully using data-frame operations and R functions.

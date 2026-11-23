@@ -1,0 +1,46 @@
+---
+title: "Practical 3"
+author: "Deepak Kumar Bharti"
+date: '25056765013'
+output: html_document
+---
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+To create two vectors in R—one of size 5 containing the value 2 and another of size 4 containing the value 5, combine them into a single vector, add an element with value 1, and extract the elements present at odd positions.
+
+#### **Theory :**
+In R, a **vector** is a collection of elements of the same data type. The `rep()` function is used to create vectors with repeated values, while the `c()` function combines multiple vectors. Elements can be added to a vector using `c()`, and specific elements can be extracted using **indexing**. Odd-position elements can be selected using a sequence of indices such as `seq(1, length(value), by = 2)`.
+
+#### **Problem :**
+Generate one vector of size 5 with each entry as 2 and second vector of size 4 with each entry as 5 and perform the following tasks :
+```{r}
+# Generating the vectors
+v1 <- rep(2, 5)
+cat("The vector of size 5 with each entry as 2 :",v1)
+v2 <- rep(5, 4)
+cat("The vector of size 4 with each entry as 5 :",v2)
+```
+**I.** Combine them into a single vector
+```{r}
+# Combining the vector
+combined <- c(v1, v2)
+cat("The combined vector is :",combined)
+```
+**II.** Add an element to combined vector, whose value is 1 and store them into another vector.
+```{r}
+additional <- c(combined, 1)
+cat("The vector after adding an additional elements :",additional)
+```
+**III.** Extract all the elements which are at the odd places.
+```{r}
+# Extracting all elements at odd places
+odd_places <- additional[seq(1, length(additional), by = 2)]
+cat("The elements which are at odd places :",odd_places)
+```
+
+#### **Result :**
+The two vectors were successfully created and combined. An element with value 1 was added, and the elements at odd positions were successfully extracted.

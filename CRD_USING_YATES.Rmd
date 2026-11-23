@@ -1,0 +1,438 @@
+---
+title: "Practical 27"
+author: "Deepak Kumar Bharti"
+date: '25056765013'
+output: html_document
+---
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+To analyse a $2^2$ factorial experiment conducted in Complete Randomised Design (CRD) using Yates' Algorithm.
+
+#### **Problem :**
+Given below are plans and yields of a $2^2$ factorial experiment conducted in Complete Randomised Design.
+
+|  |   |   |   |
+|-----|----|----|----|
+| 20 (1)  | 28 a | 24 a | 10 b |
+| 23 ab  | 11 b | 22 ab | 17 (1) |
+| 24 a  | 15 b | 21 ab | 19 (1) |
+
+Analyse the design and give your comment.
+
+#### **Theory :**
+A factorial experiment is an experimental design in which two or more factors are studied simultaneously at different levels. It helps to determine the individual effects of each factor as well as the interaction effects between them.
+
+In a $2^2$ factorial experiment, there are two factors, A and B, and each factor has two levels, namely low and high. Thus, the total number of treatment combinations is:
+$$
+2^2 = 4
+$$
+
+The four treatment combinations are (1), a, b and ab, where:
+
+| Treatment | Factor A | Factor B |
+|:---------:|:--------:|:--------:|
+| (1)       | Low      | Low      |
+| a         | High     | Low      |
+| b         | Low      | High     |
+| ab        | High     | High     |
+
+The experiment is conducted in Completely Randomised Design (CRD), in which all treatment combinations are randomly assigned to experimental units. Each treatment combination is replicated an equal number of times.
+
+##### **Treatment Combinations and Treatment Totals**
+The observations are first arranged according to the standard treatment order:
+
+$$
+(1),\ a,\ b,\ ab
+$$
+
+The total of observations under each treatment is calculated. These treatment totals are used to estimate the factorial effects through Yates' Algorithm.
+
+##### **Yates' Algorithm**
+Yates' Algorithm is a systematic method used to calculate factorial contrasts and effects in $2^n$ factorial experiments.
+
+For a $2^2$ factorial experiment, the treatment totals are arranged in the order (1), a, b and ab. Successive additions and subtractions are performed to obtain the contrasts.
+
+The contrasts obtained are:
+
+$$
+\begin{aligned}
+\text{Total} &= (1)+a+b+ab\\
+A &= -(1)+a-b+ab\\
+B &= -(1)-a+b+ab\\
+AB &= (1)-a-b+ab
+\end{aligned}
+$$
+
+##### **Calculation of Factorial Effects**
+The factorial effects are calculated using:
+
+$$
+\text{Effect} =
+\frac{\text{Contrast}}{r \times 2^{k-1}}
+$$
+
+Where:
+
+- $r$ = Number of replications.
+- $k$ = Number of factors.
+- $2^k$ = Number of treatment combinations.
+
+For a $2^2$ factorial experiment:
+
+**Effect of Factor A:**
+
+$$
+A = \frac{\text{Contrast of A}}{2r}
+$$
+
+**Effect of Factor B:**
+
+$$
+B = \frac{\text{Contrast of B}}{2r}
+$$
+
+**Interaction Effect AB:**
+
+$$
+AB = \frac{\text{Contrast of AB}}{2r}
+$$
+
+##### **Analysis of Variance (ANOVA)**
+ANOVA is used to test the significance of the main effects and interaction effect.
+
+**Correction Factor (CF):**
+
+$$
+CF = \frac{G^2}{N}
+$$
+
+Where $G$ is the grand total and $N$ is the total number of observations.
+
+**Total Sum of Squares:**
+
+$$
+TSS = \sum Y^2 - CF
+$$
+
+**Sum of Squares due to Factor A:**
+
+$$
+SS_A = \frac{C_A^2}{r \times 2^2}
+$$
+
+**Sum of Squares due to Factor B:**
+
+$$
+SS_B = \frac{C_B^2}{r \times 2^2}
+$$
+
+**Sum of Squares due to Interaction AB:**
+
+$$
+SS_{AB} = \frac{C_{AB}^2}{r \times 2^2}
+$$
+
+**Error Sum of Squares:**
+
+$$
+SS_E = TSS - SS_A - SS_B - SS_{AB}
+$$
+
+Where $C_A$, $C_B$ and $C_{AB}$ represent the respective factorial contrasts.
+
+##### **Degrees of Freedom**
+For a $2^2$ factorial experiment with $r$ replications:
+
+| Source of Variation | Degrees of Freedom |
+|---------------------|--------------------|
+| Factor A            | 1                  |
+| Factor B            | 1                  |
+| Interaction AB      | 1                  |
+| Error               | $4(r-1)$           |
+| Total               | $4r-1$             |
+
+##### **Mean Sum of Squares and F-test**
+Mean sum of squares is calculated as:
+
+$$
+MS = \frac{SS}{df}
+$$
+
+The F-value is calculated as:
+
+$$
+F = \frac{MS_{\text{Factor}}}{MS_{\text{Error}}}
+$$
+
+The calculated F-value is compared with the tabulated F-value at the required level of significance.
+
+- If calculated F is greater than tabulated F, the effect is significant.
+- If calculated F is less than tabulated F, the effect is non-significant.
+
+##### **Statistical Model**
+The mathematical model for a $2^2$ factorial experiment in CRD is:
+
+$$
+Y_{ijk} = \mu + \alpha_i + \beta_j +
+(\alpha\beta)_{ij} + \epsilon_{ijk}
+$$
+
+Where:
+
+- $\mu$ = Overall mean.
+- $\alpha_i$ = Effect of factor A.
+- $\beta_j$ = Effect of factor B.
+- $(\alpha\beta)_{ij}$ = Interaction effect between A and B.
+- $\epsilon_{ijk}$ = Random error.
+
+##### **Functions Used :**
+- `factor()` – To define treatment combinations as categorical variables.
+- `rep()` – To repeat treatment labels according to the number of replications.
+- `c()` – To combine values into vectors.
+- `data.frame()` – To create a data frame.
+- `tapply()` – To calculate treatment totals and treatment means.
+- `as.numeric()` – To convert treatment totals into numeric values.
+- `sum()` – To calculate the grand total of observations.
+- `length()` – To find the total number of observations.
+- `aov()` – To fit the factorial ANOVA model.
+- `anova()` – To obtain the analysis of variance table.
+- `summary()` – To display the summary of the fitted model.
+- `max()` – To find the maximum treatment mean.
+- `which.max()` – To identify the treatment with the highest mean.
+- `names()` – To extract treatment names.
+- `is.na()` – To check for missing values.
+- `cat()` – To display results and conclusions.
+- `print()` – To display data, Yates' table and ANOVA results.
+- `if`, `else` – To test the significance of factors and identify the best treatment.
+
+#### **Code and Calculation :**
+```{r}
+# Analysis of 2^2 Factorial Experiment in CRD Using Yates' Algorithm
+
+# Step 1: Enter the experimental data
+# Treatment combinations and their respective yields
+Treatment <- factor(
+  rep(c("(1)", "a", "b", "ab"), each = 3),
+  levels = c("(1)", "a", "b", "ab")
+)
+
+Yield <- c(20, 17, 19,
+           28, 24, 24,
+           10, 11, 15,
+           23, 22, 21)
+
+# Create a data frame
+data <- data.frame(Treatment, Yield)
+
+# Display the experimental data
+cat("Experimental Data:")
+print(data)
+
+# Step 2: Calculate treatment totals
+# Calculate the total yield for each treatment
+T <- tapply(data$Yield, data$Treatment, sum)
+
+cat("Treatment Totals:")
+print(T)
+
+# Step 3: Apply Yates' Algorithm
+# Arrange treatment totals in standard Yates order
+Y <- as.numeric(T)
+
+# First column: Addition and subtraction
+C1 <- c(
+  Y[1] + Y[2],
+  Y[3] + Y[4],
+  Y[2] - Y[1],
+  Y[4] - Y[3]
+)
+
+# Second column: Addition and subtraction
+C2 <- c(
+  C1[1] + C1[2],
+  C1[3] + C1[4],
+  C1[2] - C1[1],
+  C1[4] - C1[3]
+)
+
+# Prepare the Yates table
+Yates <- data.frame(
+  Treatment = c("(1)", "a", "b", "ab"),
+  Total = Y,
+  First_Column = C1,
+  Final_Contrast = C2
+)
+
+cat("Yates' Algorithm Table:")
+print(Yates)
+
+# Step 4: Calculate factorial effects
+# Number of replications
+r <- 3
+
+# Number of factors
+k <- 2
+
+# Calculate factorial effects
+Effects <- C2[2:4] / (r * 2^(k-1))
+
+names(Effects) <- c("A", "B", "AB")
+
+cat("Factorial Effects:")
+print(Effects)
+
+# Step 5: Calculate Correction Factor and TSS
+# Grand total of all observations
+G <- sum(data$Yield)
+
+# Total number of observations
+N <- length(data$Yield)
+
+# Correction Factor
+CF <- G^2 / N
+
+# Total Sum of Squares
+TSS <- sum(data$Yield^2) - CF
+
+cat("Grand Total =", G)
+cat("Correction Factor =", CF)
+cat("Total Sum of Squares =", TSS)
+
+# Step 6: Calculate Sum of Squares
+# Sum of squares due to factor A
+SSA <- C2[2]^2 / (r * 2^k)
+
+# Sum of squares due to factor B
+SSB <- C2[3]^2 / (r * 2^k)
+
+# Sum of squares due to interaction AB
+SSAB <- C2[4]^2 / (r * 2^k)
+
+# Error Sum of Squares
+SSE <- TSS - SSA - SSB - SSAB
+
+cat("SS due to A =", SSA)
+cat("SS due to B =", SSB)
+cat("SS due to AB =", SSAB)
+cat("Error SS =", SSE)
+
+
+# Step 7: Fit the factorial CRD model
+# Define the levels of factor A
+data$A <- factor(
+  ifelse(data$Treatment %in% c("a", "ab"), "High", "Low"),
+  levels = c("Low", "High")
+)
+
+# Define the levels of factor B
+data$B <- factor(
+  ifelse(data$Treatment %in% c("b", "ab"), "High", "Low"),
+  levels = c("Low", "High")
+)
+
+# Fit the two-factor factorial model
+model <- aov(Yield ~ A * B, data = data)
+
+# Step 8: Perform Analysis of Variance (ANOVA)
+# Obtain ANOVA table
+anova_table <- anova(model)
+
+cat("ANOVA Table:")
+print(anova_table)
+
+# Step 9: Extract p-values from ANOVA
+# Extract p-values for Factor A, Factor B and AB
+p_A <- anova_table["A", "Pr(>F)"]
+p_B <- anova_table["B", "Pr(>F)"]
+p_AB <- anova_table["A:B", "Pr(>F)"]
+
+cat("P-values:")
+cat("Factor A =", p_A)
+cat("Factor B =", p_B)
+cat("Interaction AB =", p_AB)
+
+# Step 10: Calculate treatment means
+# Calculate mean yield for each treatment
+Means <- tapply(data$Yield, data$Treatment, mean)
+
+cat("Treatment Means:")
+print(Means)
+
+# Identify the treatment having maximum mean yield
+Best_Treatment <- names(which.max(Means))
+
+cat("Best Treatment =", Best_Treatment)
+cat("Maximum Mean Yield =", max(Means))
+
+# Step 11: Final Conclusion
+# Level of significance
+alpha <- 0.05
+
+cat("Final Conclusion:")
+
+# Test significance of Factor A
+if (!is.na(p_A) && p_A < alpha) {
+  cat("Factor A is significant at 5% level of significance.")
+} else if (!is.na(p_A)) {
+  cat("Factor A is non-significant at 5% level of significance.")
+} else {
+  cat("P-value of Factor A is unavailable.")
+}
+
+# Test significance of Factor B
+if (!is.na(p_B) && p_B < alpha) {
+  cat("Factor B is significant at 5% level of significance.")
+} else if (!is.na(p_B)) {
+  cat("Factor B is non-significant at 5% level of significance.")
+} else {
+  cat("P-value of Factor B is unavailable.")
+}
+
+# Test significance of interaction effect AB
+if (!is.na(p_AB) && p_AB < alpha) {
+  cat("Interaction effect AB is significant at 5% level of significance.")
+} else if (!is.na(p_AB)) {
+  cat("Interaction effect AB is non-significant at 5% level of significance.")
+} else {
+  cat("P-value of interaction AB is unavailable.")
+}
+
+# Identify the best treatment
+if (Means["(1)"] == max(Means)) {
+  Best_Treatment <- "(1)"
+} else if (Means["a"] == max(Means)) {
+  Best_Treatment <- "a"
+} else if (Means["b"] == max(Means)) {
+  Best_Treatment <- "b"
+} else {
+  Best_Treatment <- "ab"
+}
+
+cat("The best treatment is '", Best_Treatment,
+    "' with mean yield", max(Means))
+```
+
+#### **Results :**
+The $2^2$ factorial experiment was analysed using Yates' Algorithm and ANOVA in CRD.
+
+1. The treatment totals for (1), a, b and ab were **56, 76, 36 and 66**, respectively.
+
+2. The estimated factorial effects were:
+   - Factor A = 8.3333
+   - Factor B = -5.0000
+   - Interaction AB = 1.6667
+
+3. At the 5% level of significance:
+   - Factor A was **significant** (p = 0.000084).
+   - Factor B was **significant** (p = 0.002362).
+   - Interaction AB was **non-significant** (p = 0.182776).
+
+4. The highest mean yield was obtained from treatment **a (25.3333)**.
+
+#### **Conclusions :**
+The analysis revealed that both factors A and B have significant effects on yield at the 5% level of significance, whereas their interaction effect (AB) is non-significant. Factor A has a positive effect of 8.3333, while factor B has a negative effect of 5.0000. Among the four treatment combinations, treatment 'a' recorded the highest mean yield of 25.3333 and was found to be the best treatment combination.

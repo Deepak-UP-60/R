@@ -1,0 +1,199 @@
+---
+title: "Practical 14"
+author: "Deepak Kumar Bharti"
+date: "25056765013"
+output: html_document
+---
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+To visualize univariate and bivariate distributions in R using the mtcars `dataset` and standard bivariate normal density through kernel density, 2D scatter, 3D surface, and contour plots.
+
+#### **Problem :**
+Using the built-in mtcars dataset and the standard bivariate normal density, create the following plots in R :
+
+i. A kernel density plot of the mpg variable from the mtcars dataset.
+ii. A 2D scatter plot of mpg against wt from the mtcars dataset using the ggplot2 package.
+iii. A 3D surface plot of the standard bivariate normal density using `persp()`.
+iv. A contour plot of the same bivariate normal density using `contour()`.
+v. A single panel display combining all four plots above in one graphics window.
+
+#### **Theory :**
+Data visualization is an important technique in statistics for understanding the distribution and relationship between variables. R provides several graphical methods for visualizing data.
+
+The `mtcars` dataset is a built-in R dataset containing information about different car models. Variables such as **mpg** (miles per gallon) and **wt** (weight) can be used to study distributions and relationships.
+
+A **kernel density plot** provides a smooth estimate of the probability distribution of a continuous variable. A **2D scatter plot** is used to visualize the relationship between two numerical variables, where each point represents an observation.
+
+The **bivariate normal distribution** describes the joint behavior of two normally distributed variables. For a standard bivariate normal distribution, the variables have mean $0$, variance $1$, and are independent. Its probability density function is :
+$$
+f(x,y) = \frac{1}{2\pi}e^{-\frac{x^2 + y^2}{2}}
+$$
+
+A **3D surface plot** represents this density as a three-dimensional surface, with $x$ and $y$ as the two variables and the height representing density. A **contour plot** represents the same density using lines joining points of equal density.
+
+Thus, these graphical techniques help in understanding **data distribution, relationships between variables, and the shape of a bivariate probability distribution**.
+
+##### **Functions Used :**
+
+- `data()` : Loads a built-in dataset such as `mtcars`.
+- `library()` : Loads required R packages.
+- `ggplot()` : Creates the basic structure of a plot.
+- `aes()` : Specifies variables used for the axes and aesthetics.
+- `geom_density()` : Creates a kernel density plot.
+- `geom_point()` : Creates a 2D scatter plot.
+- `labs()` : Adds titles and axis labels.
+- `theme_minimal()` : Applies a simple theme to a plot.
+- `seq()` : Generates a sequence of values for `x` and `y`.
+- `outer()` : Calculates values for every combination of `x` and `y`.
+- `exp()` : Calculates the exponential function used in the normal density formula.
+- `persp()` : Creates a 3D surface plot.
+- `contour()` : Creates a contour plot.
+- `as.ggplot()` : Converts a base R plot into a `ggplot` object.
+- `grid.arrange()` : Combines multiple plots into a single panel.
+- `par()` : Sets graphical parameters such as plot layout and margins.
+
+#### **Code and Calculation :**
+```{r}
+# Installing required packages
+#install.packages(c("ggplot2", "gridExtra", "ggplotify"))
+
+# Loading the packages
+library(ggplot2)
+library(gridExtra)
+library(ggplotify)
+
+# loading the built-in dataset
+data(mtcars)
+
+# Viewing first few rows
+head(mtcars)
+
+# Checking the variables
+names(mtcars)
+
+# Checking the type of the entire dataset
+class(mtcars)
+
+# Checking the data type of every column
+str(mtcars)
+```
+
+**I.** Kernel density plot of mpg from mtcars
+```{r}
+p1 <- ggplot(mtcars, aes(x = mpg)) +
+  geom_density(fill = "skyblue", color = "black", alpha = 0.6) +
+  labs(
+    title = "Kernel Density Plot of MPG",
+    x = "Miles per Gallon (mpg)",
+    y = "Density"
+  ) +
+  theme_minimal()
+
+p1
+```
+
+**II.** 2D scatter plot of `mpg` against `wt` using `ggplot2`
+```{r}
+p2 <- ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point(size = 3) +
+  labs(
+    title = "MPG vs Weight",
+    x = "Weight (1000 lbs)",
+    y = "Miles per Gallon (mpg)"
+  ) +
+  theme_minimal()
+
+p2
+```
+
+**III.** 3D surface plot of the standard bivariate normal density
+```{r}
+# Creating x and y values
+x <- seq(-3, 3, length.out = 50)
+y <- seq(-3, 3, length.out = 50)
+
+# Creating density matrix
+z <- outer(
+  x, y,
+  function(x, y) {
+    (1 / (2 * pi)) * exp(-(x^2 + y^2) / 2)
+  }
+)
+
+# 3D surface plot
+persp(
+  x, y, z,
+  theta = 30,
+  phi = 30,
+  expand = 0.6,
+  col = "lightblue",
+  xlab = "X",
+  ylab = "Y",
+  zlab = "Density",
+  main = "Standard Bivariate Normal Density"
+)
+```
+
+**IV.** Contour plot of the same density
+```{r}
+contour(
+  x, y, z,
+  nlevels = 15,
+  xlab = "X",
+  ylab = "Y",
+  main = "Contour Plot of Standard Bivariate Normal Density"
+)
+```
+
+**V.** Combine all four plots into one graphics window
+```{r}
+# Converting persp() to a ggplot-compatible object
+p3 <- as.ggplot(
+  ~persp(
+    x, y, z,
+    theta = 30,
+    phi = 30,
+    expand = 0.6,
+    col = "lightblue",
+    xlab = "X",
+    ylab = "Y",
+    zlab = "Density",
+    main = "3D Bivariate Normal Density"
+  )
+)
+
+# Converting contour() to a ggplot-compatible object
+p4 <- as.ggplot(
+  ~contour(
+    x, y, z,
+    nlevels = 15,
+    xlab = "X",
+    ylab = "Y",
+    main = "Bivariate Normal Contour"
+  )
+)
+
+# Arranging all four plots in a 2 x 2 panel
+grid.arrange(
+  p1, p2, p3, p4,
+  ncol = 2,
+  nrow = 2
+)
+```
+
+#### **Results :**
+1. **Kernel Density Plot** : The density plot of `mpg` shows that most cars have an MPG value approximately between **15 and 25**, with the highest density around **18–20 mpg**.
+
+2. **2D Scatter Plot** : The scatter plot of `mpg` against `wt` shows a **negative relationship** between weight and mileage. As the weight of a car increases, its MPG generally decreases.
+
+3. **3D Surface Plot** : The standard bivariate normal density forms a **bell-shaped symmetric surface**, with the maximum density at approximately $(X = 0, Y = 0)$. The density decreases as $X$ and $Y$ move away from zero.
+
+4. **Contour Plot** : The contour plot shows **concentric elliptical/circular curves** centered at $(0, 0)$. The density is highest near the center and gradually decreases toward the outer contours.
+
+#### **Conclusions :**
+The practical successfully demonstrates different methods of visualizing univariate and bivariate data in R. The `mtcars` plots show the distribution of MPG and the negative relationship between car weight and MPG. The 3D surface and contour plots clearly illustrate the symmetric, bell-shaped nature of the **standard bivariate normal distribution**, with maximum density at the origin and decreasing density away from it.

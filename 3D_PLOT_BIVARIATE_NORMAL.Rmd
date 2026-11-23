@@ -1,0 +1,109 @@
+---
+title: "Practical 11"
+author: "Deepak Kumar Bharti"
+date: '25056765013'
+output: html_document
+---
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+To define and plot the **standard bivariate normal density function** in R by computing density values over a grid using the `outer()` function and visualizing the resulting surface using the `persp()` function with customized viewing, shading, and colour options.
+
+#### **Problem :**
+Plot the standard bivariate normal density
+$$
+f(x, y) = \frac{1}{2\pi} e^{-\frac{x^2 + y^2}{2}}, \qquad (x, y) \in \mathbb{R}^2
+$$
+and perform the following tasks :
+  
+1. Define the bivariate normal density function and compute the density values over a grid of $x$ and $y$ using the `outer()` function.
+2. Plot the default 3D perspective plot of the surface using `persp(x, y, z)`.
+3. Plot a customized version of the perspective plot with `theta = 45`, `phi = 30`, `expand = 0.6`, `ltheta = 120`, `shade = 0.75`, `ticktype = "detailed"`, and `axis labels X, Y and f(x, y)`.
+4. Enhance the customized plot further by adding colour `(col = "lightblue")` and removing the bounding box `(box = FALSE)`.
+
+#### **Theory :**
+The **bivariate normal distribution** is a continuous probability distribution involving two jointly normally distributed random variables, $X$ and $Y$. In the standard case, both variables have mean $0$, variance $1$, and zero covariance. Its probability density function is
+$$
+f(x, y) = \frac{1}{2\pi} e^{-\frac{x^2 + y^2}{2}}, \qquad (x, y) \in \mathbb{R}^2
+$$
+The density is symmetric about both the $X-$ and $Y-axes$ and reaches its maximum at $(0,0)$. At the origin,
+$$
+f(0, 0) = \frac{1}{2\pi} \approx 0.1592
+$$
+As $x$ or $y$ moves away from zero, the density decreases rapidly, producing a **bell-shaped three-dimensional surface**.
+
+In R, the `outer()` function is used to calculate the density values for all combinations of x and y over a grid. The resulting values are represented as a matrix and plotted as a 3D surface using the `persp()` function.
+
+The `persp()` function allows customization of the viewing angle, shading, colour, and axis labels to obtain a clear representation of the bivariate normal density.
+
+##### **Functions Used :**
+- `function()` : defines the bivariate normal density.
+- `seq()` : generates equally spaced values for $x$ and $y$.
+- `outer()` : evaluates the density over all combinations of $x$ and $y$.
+- `persp()` : produces the three-dimensional perspective plot.
+
+#### **Code and Calculation :**
+**I.** Defining the bivariate normal density and computing values using `outer()`
+```{r}
+# Defining the bivariate normal density function
+f <- function(x, y) {
+  (1 / (2 * pi)) * exp(-(x^2 + y^2) / 2)
+}
+
+# Creating x and y values
+x <- seq(-4, 4, length.out = 50)
+y <- seq(-4, 4, length.out = 50)
+
+# Computing density values over the grid using outer()
+z <- outer(x, y, f)
+
+# Displaying dimensions and some density values
+dim(z)
+z[1:5, 1:5]
+```
+
+**II.** Ploting Default 3D perspective plot
+```{r}
+# Default 3D perspective plot
+persp(x, y, z)
+```
+
+**III.** Customizing perspective plot
+```{r}
+persp(x, y, z,
+      theta = 45,
+      phi = 30,
+      expand = 0.6,
+      ltheta = 120,
+      shade = 0.75,
+      ticktype = "detailed",
+      xlab = "X",
+      ylab = "Y",
+      zlab = "f(x, y)")
+```
+
+**IV.** Customizing plot with colour and no bounding box
+```{r}
+persp(x, y, z,
+      theta = 45,
+      phi = 30,
+      expand = 0.6,
+      ltheta = 120,
+      shade = 0.75,
+      ticktype = "detailed",
+      col = "lightblue",
+      box = FALSE,
+      xlab = "X",
+      ylab = "Y",
+      zlab = "f(x, y)")
+```
+
+#### **Results & Conclusions :**
+The bivariate normal density was successfully defined and evaluated over a $50×50$ grid using the `outer()` function. The `persp()` function produced the required 3D surface plots. The plots show a symmetric bell-shaped surface with the maximum density at $(0,0)$. The customized plot also displays the specified viewing angle, shading, colour, and axis details.
+
+Thus, the standard bivariate normal density was successfully plotted in R using `outer()` and `persp()`. The graphical output clearly represents the bell-shaped nature and symmetry of the bivariate normal distribution.
+

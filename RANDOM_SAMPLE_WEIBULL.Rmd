@@ -1,0 +1,148 @@
+---
+title: "Practical 18"
+author: "Deepak Kumar Bharti"
+date: '25056765013'
+output: html_document
+---
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+To generate **Weibull** random variables using the inverse transformation method in R for the given parameter.
+
+#### **Problem :**
+Generate Weibull Random Variables with shape parameter $k=2$ and scale parameter $\theta=3$.
+
+#### **Theory :**
+The **Weibull distribution** is a continuous probability distribution commonly 
+used in reliability analysis, survival analysis, and lifetime modeling. It is 
+characterized by two parameters: the **shape parameter** \(k\) and the 
+**scale parameter** $\theta$.
+
+For this practical:
+
+$$
+k = 2, \qquad \theta = 3
+$$
+
+##### **Weibull Probability Density Function**
+The probability density function (PDF) of a Weibull random variable \(X\) is:
+$$
+f(x) = \frac{k}{\theta}
+\left(\frac{x}{\theta}\right)^{k-1}
+\exp\left[-\left(\frac{x}{\theta}\right)^k\right],
+\qquad x \geq 0
+$$
+
+##### **Weibull Cumulative Distribution Function**
+The cumulative distribution function (CDF) is:
+$$
+F(x) = 1 - \exp\left[-\left(\frac{x}{\theta}\right)^k\right]
+$$
+For \(k=2\) and \(\theta=3\):
+$$
+F(x) = 1 - \exp\left[-\left(\frac{x}{3}\right)^2\right]
+$$
+
+##### **Inverse Transformation Method**
+To generate Weibull random variables, the **inverse transformation method** 
+is used.
+Let
+$$
+U \sim U(0,1)
+$$
+where $U$ is a uniformly distributed random variable.
+
+Since
+
+$$
+U = F(X)
+$$
+we have:
+$$
+U = 1 - \exp\left[-\left(\frac{X}{\theta}\right)^k\right]
+$$
+Rearranging:
+$$
+1-U = \exp\left[-\left(\frac{X}{\theta}\right)^k\right]
+$$
+Taking logarithms:
+$$
+-\ln(1-U) = \left(\frac{X}{\theta}\right)^k
+$$
+Therefore,
+$$
+X = \theta[-\ln(1-U)]^{1/k}
+$$
+For $k=2$ and $\theta=3$:
+$$
+\boxed{X = 3\sqrt{-\ln(1-U)}}
+$$
+Thus, by generating uniform random numbers using `runif()` in R and 
+applying the above transformation, Weibull random variables with shape 
+parameter $k=2$ and scale parameter $\theta=3$   can be generated.
+
+##### **Functions Used :**
+- `dweibull()` : Calculates the probability density of the Weibull distribution for given values.
+- `rweibull()` : Generates random observations directly from a Weibull distribution with specified shape and scale parameters.
+
+#### **Code and Calculation :**
+```{r}
+# Set seed for reproducibility
+set.seed(123)
+
+# Parameters
+k <- 2
+theta <- 3
+
+# Number of random variables
+n <- 1000
+
+# Generating Uniform(0,1) random variables
+U <- runif(n)
+
+# Inverse transformation
+X <- theta * (-log(1 - U))^(1/k)
+
+# Displaying first 10 generated values
+head(X, 10)
+
+# Summary statistics
+summary(X)
+
+# Sample mean & variance
+Cal_Mean = mean(X)
+cat("The mean of the Generated Sample is :",Cal_Mean)
+Cal_Variance = var(X)
+cat("The variance of the Generated Sample is :",Cal_Variance)
+
+# Theoretical mean & variance
+theoretical_mean <- theta * gamma(1 + 1/k)
+cat("The theoretical mean is :",theoretical_mean)
+theoretical_variance <- theta^2 * (
+  gamma(1 + 2/k) - gamma(1 + 1/k)^2
+)
+cat("The theoretical variance is :",theoretical_variance)
+
+# Histogram
+hist(X,
+     breaks = 30,
+     probability = TRUE,
+     main = "Weibull Random Variables (k = 2, theta = 3)",
+     xlab = "X")
+
+# Add theoretical Weibull density
+curve(dweibull(x, shape = k, scale = theta),
+      add = TRUE,
+      lwd = 2)
+```
+
+#### **Results & Conclusions :**
+The Weibull random variables were successfully generated using the inverse transformation method with shape parameter \(k=2\) and scale parameter \(\theta=3\).
+
+The sample mean (2.642819) is close to the theoretical mean (2.658681), and the sample variance (1.892791) is reasonably close to the theoretical variance (1.931417).
+
+The histogram shows a right-skewed Weibull distribution, and the theoretical density curve closely follows the shape of the generated sample, indicating that the generated random sample follows the expected Weibull distribution.

@@ -1,0 +1,190 @@
+---
+title: "Practical 29"
+author: "Deepak Kumar Bharti"
+date: '25056765013'
+output: html_document
+---
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+To apply the Mann–Whitney U test in R to determine whether the median amount spent on birthday gifts by unemployed students is significantly lower than that spent by employed students at the 1% level of significance.
+
+#### **Problem :**
+##### **Mann-Whitney U Test**
+The following data show the amount (in rupees) to be spent on a birthday gift by students who are unemployed and employed.
+
+Unemployed Students :
+$$
+200, 350, 500, 250, 150, 275
+$$
+
+Employed Students :
+$$
+550, 500, 1000, 450, 700, 200, 500, 600, 1000
+$$
+
+Examine whether the median amount to be spent on a birthday gift by students who are unemployed is lower than that of students who are employed using the **Mann-Whitney U test** at the 1% level of significance.
+
+#### **Theory :**
+##### **Mann–Whitney U Test**
+The **Mann–Whitney U test** is a non-parametric statistical test used to determine whether there is a significant difference between two independent groups. It is also known as the **Wilcoxon Rank-Sum Test**. It is used as an alternative to the independent samples t-test when the assumption of normality is not satisfied.
+
+The test compares two independent samples by converting their observations into ranks and analysing the differences between the rank distributions. It is particularly useful when the data are not normally distributed or when the sample size is small.
+
+In this practical, the Mann–Whitney U test is used to examine whether the median amount spent on birthday gifts by unemployed students is significantly lower than that spent by employed students.
+
+##### **Objectives of the Test**
+- To compare two independent samples.
+- To determine whether a statistically significant difference exists between the two groups.
+- To examine whether unemployed students spend less on birthday gifts than employed students.
+- To test the given hypothesis at a 1% level of significance.
+
+##### **Assumptions of the Mann–Whitney U Test**
+1. The two samples must be independent of each other.
+2. Observations should be randomly selected.
+3. The data should be measured on an ordinal, interval or ratio scale.
+4. Observations within each group should be independent.
+5. If the test is used to compare medians, the two populations should have approximately similar distribution shapes.
+
+##### **Hypotheses**
+**Null Hypothesis (H0):**
+
+There is no significant difference in the amount spent on birthday gifts by unemployed and employed students.
+
+**Alternative Hypothesis (H1):**
+
+The median amount spent on birthday gifts by unemployed students is lower than that spent by employed students.
+
+##### **Procedure of the Mann–Whitney U Test**
+The test is performed using the following steps:
+
+1. Combine the observations from both independent samples into a single dataset.
+2. Arrange all observations in ascending order.
+3. Assign ranks to each observation, giving average ranks to tied observations.
+4. Calculate the sum of ranks for each sample.
+5. Calculate the Mann–Whitney U statistic using the rank sums.
+6. Determine the p-value and compare it with the specified level of significance.
+
+##### **Formula**
+The Mann–Whitney U statistic is calculated using the following formulas:
+
+$$
+U_1 = R_1 - \frac{n_1(n_1+1)}{2}
+$$
+
+$$
+U_2 = R_2 - \frac{n_2(n_2+1)}{2}
+$$
+
+Where:
+
+- `U1, U2` = Mann–Whitney U statistics.
+- `R1` = Sum of ranks of the first sample.
+- `R2` = Sum of ranks of the second sample.
+- `n1` = Number of observations in the first sample.
+- `n2` = Number of observations in the second sample.
+
+For the conventional two-sided test, the smaller of the two U statistics is used. For a one-sided test, the direction of the alternative hypothesis must be considered.
+
+##### **Level of Significance**
+The level of significance represents the probability of rejecting a true null hypothesis.
+
+In this practical:
+
+$$
+\alpha = 0.01 = 1\%
+$$
+
+##### **Decision Rule**
+The decision is made by comparing the p-value with the level of significance.
+
+- If p-value is less than 0.01, reject the null hypothesis.
+- If p-value is greater than or equal to 0.01, do not reject the null hypothesis.
+
+##### **Functions Used :**
+- `c()` – Used to create vectors containing the amounts spent by unemployed and employed students.
+- `print()` – Used to display the datasets and test results.
+- `wilcox.test()` – Used to perform the Mann–Whitney U Test (Wilcoxon Rank-Sum Test) for two independent samples.
+- `paste()` – Used to combine text with calculated values for displaying output.
+- `p.value` – Used to extract the p-value from the test results.
+- `if...else` – Used to make the statistical decision based on the p-value.
+- `result$p.value` – Used to access the p-value stored in the test result object.
+- `alpha` – Used to store the level of significance (0.01).
+
+#### **Code and Calculation :**
+
+```{r}
+# Mann-Whitney U Test
+
+# Step 1: Enter the data for unemployed students
+unemployed <- c(200, 350, 500, 250, 150, 275)
+
+# Step 2: Enter the data for employed students
+employed <- c(550, 500, 1000, 450, 700, 200, 500, 600, 1000)
+
+# Step 3: Display the two datasets
+print("Amount spent by unemployed students:")
+print(unemployed)
+
+print("Amount spent by employed students:")
+print(employed)
+
+# Step 4: Set the level of significance
+alpha <- 0.01
+
+# Step 5: Perform the Mann-Whitney U Test
+# alternative = "less" tests whether unemployed students
+# spend less than employed students.
+result <- wilcox.test(unemployed, employed,
+                      alternative = "less",
+                      exact = FALSE,
+                      correct = TRUE)
+
+# Step 6: Display the test results
+print(result)
+
+# Step 7: Extract the p-value
+p_value <- result$p.value
+
+print(paste("P-value:", p_value))
+
+# Step 8: Make the statistical decision
+if (p_value < alpha) {
+  print("Reject the Null Hypothesis (H0)")
+  print("Unemployed students spend significantly less than employed students.")
+} else {
+  print("Do not reject the Null Hypothesis (H0)")
+  print("There is insufficient evidence to conclude that unemployed students spend less.")
+}
+
+# Step 9: Display the final conclusion
+print(paste("Level of significance:", alpha))
+```
+
+#### **Results :**
+The Mann–Whitney U test was performed in R to determine whether unemployed students spend significantly less on birthday gifts than employed students.
+
+The test produced the following results:
+
+- **Test statistic (W):** 6.5
+- **P-value:** 0.0089
+- **Level of significance (α):** 0.01 (1%)
+- **Alternative hypothesis:** Unemployed students spend less than employed students.
+
+##### **Statistical Decision**
+Since the p-value (0.0089) is less than the level of significance (0.01), we reject the null hypothesis (H0).
+
+$$
+0.0089 < 0.01
+$$
+
+#### **Conclusions :**
+At the 1% level of significance, it is concluded that the amount spent on birthday gifts by unemployed students is significantly lower than the amount spent by employed students.
+
+Hence, the **alternative hypothesis is accepted, indicating that unemployed students spend significantly less on birthday gifts than employed students**.
+
+

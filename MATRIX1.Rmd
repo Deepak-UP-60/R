@@ -1,0 +1,143 @@
+---
+title: "Practical 5"
+author: "Deepak Kumar Bharti"
+date: '25056765013'
+output: html_document
+---
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+
+To define and manipulate a matrix in R and perform various matrix operations such as finding its dimensions, transpose, inverse, row and column sums, row and column means, diagonal elements, and extracting specific rows, columns, and elements.
+
+#### **Theory :**
+
+A **matrix** is a rectangular arrangement of numbers organized into rows and columns. In R, a matrix is a two-dimensional data structure that contains elements of the same data type. The `matrix()` function is used to create a matrix.
+
+A matrix with **m rows and n columns** is said to have dimensions **m × n**. R provides several built-in functions for performing mathematical and statistical operations on matrices.
+
+The important matrix operations used in this practical are:
+
+- `matrix()` – creates a matrix.
+- `nrow()` – returns the number of rows.
+- `ncol()` – returns the number of columns.
+- `dim()` – returns the dimensions of a matrix.
+- `t()` – calculates the transpose of a matrix by interchanging its rows and columns.
+- `solve()` – calculates the inverse of a square, non-singular matrix.
+- `rowSums()` – calculates the sum of each row.
+- `colSums()` – calculates the sum of each column.
+- `rowMeans()` – calculates the mean of each row.
+- `colMeans()` – calculates the mean of each column.
+- `diag()` – extracts the diagonal elements of a matrix.
+- `mat_A[row, column]` – is used to access or extract a particular element, row, or column.
+- `rownames()` – assigns names to the rows of a matrix.
+- `colnames()` – assigns names to the columns of a matrix.
+
+#### **Problem :**
+
+Define the following matrix with name mat_A in R.
+$$
+A =
+\begin{bmatrix}
+5.07 & 3.19 & -2.32 & 1.87 \\
+1.21 & 8.95 & -2.04 & 4.49 \\
+-3.32 & -4.66 & 9.93 & 2.05 \\
+1.18 & 6.72 & -3.66 & 8.77
+\end{bmatrix}
+$$
+
+```{r}
+# Defining the given matrix
+mat_A <- matrix(c(
+  5.07,  3.19, -2.32, 1.87,
+  1.21,  8.95, -2.04, 4.49,
+ -3.32, -4.66,  9.93, 2.05,
+  1.18,  6.72, -3.66, 8.77
+), nrow = 4, byrow = TRUE)
+cat("The given matrix is showed below :")
+mat_A
+```
+
+**I.** Print the number of rows, columns and dimensions of the above matrix.
+
+```{r}
+cat("The number of rows in this matrix is :",nrow(mat_A))
+cat("The number of columns in this matrix is :",ncol(mat_A))
+cat("The dimensions of this matrix is :",dim(mat_A))
+```
+
+**II.** Calculate the transpose, inverse, row sums, column sums, row mean and column mean of the above matrix.
+     
+```{r transpose, echo=FALSE}
+cat("The transpose of this matrix is :")
+```
+```{r}
+t(mat_A)
+```
+
+```{r inverse, echo=FALSE}
+cat("The inverse of this matrix is :")
+```
+```{r}
+solve(mat_A)
+```
+
+```{r}
+cat("The row sum of this matrix are :",rowSums(mat_A))
+cat("The column sum of this matrix are :",colSums(mat_A))
+cat("The row mean of this matrix are :",rowMeans(mat_A))
+cat("The column mean of this matrix are :",colMeans(mat_A))
+```
+
+**III.** Use R function to print the diagonal of mat_A.
+
+```{r}
+cat("The diagonal of this matrix are :",diag(mat_A))
+```
+
+**IV.** Extract the 2^nd^ column of mat_A.
+
+```{r}
+cat("The 2nd column of this matrix is :",mat_A[, 2])
+```
+
+**V.** Extract the 3^rd^ row of mat_A.
+
+```{r}
+cat("The 3rd row of this matrix is :",mat_A[3, ])
+```
+
+**VI.** Extract the 4^th^ entry of the 3^rd^ column of mat_A.
+
+```{r}
+cat("The 4th entry from the 3rd column is :",mat_A[4, 3])
+```
+
+**VII.** Define the row names as R~1~, R~2~, R~3~, R~4~.
+
+```{r}
+rownames(mat_A) <- c("R1", "R2", "R3", "R4")
+```
+```{r rownames, echo=FALSE}
+cat("The matrix after naming the rows is :")
+mat_A
+```
+
+**VIII.** After step 7, define the column names also as C~1~, C~2~, C~3~, C~4~.
+
+```{r}
+colnames(mat_A) <- c("C1", "C2", "C3", "C4")
+```
+```{r columnnames, echo=FALSE}
+cat("The matrix after naming the rows is :")
+mat_A
+```
+
+#### **Result :**
+
+The given **4 × 4 matrix** **`mat_A`** was successfully created and various matrix operations were performed in R, including finding its dimensions, transpose, inverse, row and column sums, row and column means, diagonal elements, and extracting specific rows, columns, and elements. Row names (`R1–R4`) and column names (`C1–C4`) were also successfully assigned.
+

@@ -1,0 +1,264 @@
+---
+title: "Practical 15"
+author: "Deepak Kumar Bharti"
+date: '25056765013'
+output: html_document
+---
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Aim :**
+To graphically represent the Hyper-Poisson distribution in R using its PMF through 2D, 3D perspective, and contour plots for different parameter values.
+
+#### **Problem :**
+The probability mass function (PMF) of the Hyper-Poisson distribution is given by,
+
+$$
+P(X=x)=
+\frac{\Gamma(\beta)}
+{{}_1F_1(1;\beta;\lambda)}
+\cdot
+\frac{\lambda^x}{\Gamma(x+\beta)},
+\qquad x=0,1,2,\ldots
+$$
+
+where $\lambda>0$ and $\beta>0$ are the parameters, $\Gamma(\cdot)$ denotes the Gamma function, and ${}_1F_1(a;b;z)$ is the confluent hypergeometric function.
+
+Using the above probability mass function:
+
+1. Compute the probabilities for $x=0,1,\ldots,20$ by fixing $\lambda=3$ and considering $\beta=0.5,1,2,4$.
+
+2. Construct a 2D plot of the Hyper-Poisson PMF for $\lambda=3$ and compare the distributions corresponding to $\beta=0.5,1,2,4$.
+
+3. Fix $\beta=2$ and construct a 3D surface plot of the PMF for $x=0,1,\ldots,15$ with $\lambda$ varying from 0.5 to 8.
+
+4. Using the same parameter settings as in part (3), draw a contour plot of the Hyper-Poisson PMF.
+
+#### **Theory :**
+The **Hyper-Poisson distribution** is a discrete probability distribution defined for
+$x = 0,1,2,\ldots$, with parameters $\lambda > 0$ and $\beta > 0$.
+Its probability mass function (PMF) is
+
+$$
+P(X=x) = f(x) =
+\frac{\Gamma(\beta)}
+{{}_1F_1(1;\beta;\lambda)}
+\frac{\lambda^x}{\Gamma(x+\beta)},
+\qquad x=0,1,2,\ldots
+$$
+
+where $\Gamma(\cdot)$ is the Gamma function and
+${}_1F_1(a;b;z)$ is the confluent hypergeometric function.
+
+The parameter $\lambda$ controls the general location and spread of the distribution,
+while $\beta$ affects its shape. When $\beta=1$, the Hyper-Poisson distribution
+reduces to the Poisson distribution with parameter $\lambda$.
+
+In this practical, the PMF is evaluated in **R** for different values of
+$\lambda$ and $\beta$. The distribution is then represented graphically using a
+**2D plot**, a **3D perspective plot (`persp()`)**, and a **contour plot
+(`contour()`)** to study how the probability changes with $x$, $\lambda$, and
+$\beta$.
+
+##### **Functions Used :**
+- `gamma()` : Computes the Gamma function, $\Gamma(x)$.
+- `genhypergeo()` : Computes the generalized hypergeometric function; here it is used for the confluent hypergeometric function ${}_1F_1$.
+- `Re()` : Returns the real part of a number or complex-valued result.
+- `function()` : Creates a user-defined function in R. Here, it defines the Hyper-Poisson PMF.
+- `mapply()` : Applies a function to multiple arguments simultaneously and returns the results.
+- `expand.grid()` : Creates a data frame containing all possible combinations of given vectors.
+- `head()` : Displays the first few rows of a data frame or other object.
+- `outer()` : Applies a function to every combination of two vectors and returns the results as a matrix.
+- `persp()` : Creates a three-dimensional perspective plot of a surface.
+- `contour()` : Creates a contour plot showing lines of equal values.
+- `ggplot()` : Creates a graphical plot using the ggplot2 plotting system.
+- `geom_line()` : Adds lines to a `ggplot` graph.
+- `ggeom_point()` : Adds points to a `ggplot` graph.
+
+#### **Code and Calculation :**
+```{r}
+# Installing required packages
+#install.packages(c("hypergeo", "rlang", "ggplot2", "plotly"))
+
+# Loading the packages
+library(hypergeo)
+library(ggplot2)
+library(plotly)
+
+# Defining the Hyper-Poisson PMF
+hyper_poisson_pmf <- function(x, lambda, beta) {
+  
+  # Confluent hypergeometric function 1F1(1; beta; lambda)
+  h <- Re(
+    hypergeo::genhypergeo(
+      U = 1,
+      L = beta,
+      z = lambda
+    )
+  )
+  
+  # PMF
+  p <- gamma(beta) / h *
+       lambda^x / gamma(x + beta)
+  
+  return(p)
+}
+```
+
+**1. Calculating probabilities for x = 0, 1, ..., 20**
+```{r}
+# Values of x
+x <- 0:20
+
+# Fixed lambda
+lambda <- 3
+
+# Values of beta
+beta_values <- c(0.5, 1, 2, 4)
+
+# Creating probability table
+prob_table <- expand.grid(
+  x = x,
+  beta = beta_values
+)
+
+# Calculating probabilities
+prob_table$Probability <- mapply(
+  hyper_poisson_pmf,
+  prob_table$x,
+  lambda = lambda,
+  beta = prob_table$beta
+)
+
+prob_wide <- reshape(
+  prob_table,
+  idvar = "x",
+  timevar = "beta",
+  direction = "wide"
+)
+
+# Displaying table
+print(prob_wide)
+```
+
+**2. 2D plot of the Hyper-Poisson PMF**
+```{r}
+ggplot(
+  prob_table,
+  aes(
+    x = x,
+    y = Probability,
+    color = factor(beta),
+    group = factor(beta)
+  )
+) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  labs(
+    title = "Hyper-Poisson PMF",
+    subtitle = expression(lambda == 3),
+    x = "x",
+    y = "P(X = x)",
+    color = expression(beta)
+  ) +
+  theme_minimal()
+```
+
+This 2D plot shows the Hyper-Poisson probability distribution for $\lambda=3$ and different values of $\beta$.
+
+- For $\beta=0.5$, the probability reaches its maximum around $x=3$, with a peak of approximately $0.23$.
+- For $\beta=1$, the distribution is similar to the Poisson distribution with $\lambda=3$, with the maximum probability around $x=2$--$3$.
+- For $\beta=2$, the distribution peaks around $x=1$--$2$.
+- For $\beta=4$, the highest probability occurs at $x=0$, approximately $0.388$, and decreases rapidly as $x$ increases.
+
+**Interpretation:** As $\beta$ increases, the distribution becomes more concentrated toward smaller values of $x$. Thus, $\beta$ has a significant effect on the shape of the Hyper-Poisson distribution.
+
+**3. 3D surface plot**
+```{r}
+# x values
+x_values <- 0:15
+
+# lambda values
+lambda_values <- seq(0.5, 8, by = 0.1)
+
+# beta fixed at 2
+beta <- 2
+
+# Create PMF matrix
+z_matrix <- outer(
+  x_values,
+  lambda_values,
+  Vectorize(function(x, lambda) {
+    hyper_poisson_pmf(x, lambda, beta)
+  })
+)
+
+# 3D perspective plot
+persp(
+  x = x_values,
+  y = lambda_values,
+  z = z_matrix,
+  
+  theta = 45,
+  phi = 30,
+  expand = 0.6,
+  
+  col = "lightblue",
+  border = "black",
+  
+  xlab = "X",
+  ylab = expression(lambda),
+  zlab = "P(X = x)",
+  
+  main = "Hyper-Poisson Distribution"
+)
+```
+
+This 3D plot represents the PMF for $\beta=2$ with
+$$
+x=0,\ldots,15,\qquad \lambda=0.5,\ldots,8.
+$$
+
+- The vertical axis represents $P(X=x)$.
+- The horizontal axes represent $x$ and $\lambda$.
+- The plot shows that the probability is highest for small values of $x$ and $\lambda$.
+- As $x$ increases, the probability generally decreases.
+- Increasing $\lambda$ changes the probability distribution across the different values of $x$.
+
+**Interpretation:** The 3D plot provides a visual representation of how the Hyper-Poisson PMF changes jointly with $x$ and $\lambda$.
+
+
+**4. Contour plot**
+```{r}
+# Contour plot
+contour(
+  x = x_values,
+  y = lambda_values,
+  z = z_matrix,
+  nlevels = 15,
+  labcex = 0.8,
+  xlab = "x",
+  ylab = expression(lambda),
+  main = "Contour Plot of Hyper-Poisson PMF"
+)
+```
+
+This contour plot represents the same PMF surface for $\beta=2$.
+
+- Each contour line represents approximately the same probability value.
+- Higher contour values, such as $0.30$ and $0.25$, occur near smaller values of $x$ and $\lambda$.
+- As we move toward larger $x$ and $\lambda$, the contour values generally decrease.
+- The contour lines provide a convenient 2D representation of the changes seen in the 3D plot.
+
+**Interpretation:** The contour plot clearly identifies regions where the Hyper-Poisson PMF has high or low probability and confirms the variation observed in the 3D plot.
+
+#### **Results :**
+The Hyper-Poisson PMF was successfully calculated for $x=0,1,\ldots,20$ with $\lambda=3$ and $\beta=0.5,1,2,4$. The results show that the probability distribution changes significantly with the value of $\beta$.
+
+A 2D plot was obtained for $\lambda=3$, showing different probability patterns for the four values of $\beta$. The 3D perspective plot for $\beta=2$ shows the variation of $P(X=x)$ with $x$ and $\lambda$. The corresponding contour plot clearly represents regions having equal PMF values.
+
+#### **Conclusions :**
+The Hyper-Poisson distribution was successfully analyzed and graphically represented in R. It was observed that changing $\beta$ changes the shape and concentration of the distribution, while variations in $\lambda$ affect the probability pattern across different values of $x$. The 2D, 3D perspective, and contour plots provide a clear visualization of the behavior of the Hyper-Poisson PMF.
